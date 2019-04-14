@@ -19,6 +19,7 @@
   "homepage": "https://github.com/ebenpack/tourneykit#readme",
   "dependencies": {
     "@babel/core": "^7.4.3",
+    "@babel/polyfill": "^7.4.3",
     "@babel/preset-env": "^7.4.3",
     "@babel/preset-react": "^7.0.0",
     "babel-loader": "^8.0.5",
@@ -31,6 +32,7 @@
     "react-dom": "^16.8.6",
     "react-redux": "^7.0.2",
     "react-router": "^5.0.0",
+    "react-router-dom": "^5.0.0",
     "redux": "^4.0.1",
     "style-loader": "^0.23.1",
     "webpack": "^4.29.6",
