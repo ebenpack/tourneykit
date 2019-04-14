@@ -121,6 +121,10 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'dist'),
+]
+
 GRAPHENE = {
     'SCHEMA': 'tourneykit.schema.schema'
 }

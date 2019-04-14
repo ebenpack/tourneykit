@@ -1,9 +1,8 @@
 import graphene
 
 from graphene_django.types import DjangoObjectType
-from graphene_django.rest_framework.mutation import SerializerMutation
 
-from tourney.models import Competitor, Team, Game, Tourney, Match
+from tourney.models import Competitor, Team, Game, Tourney, Match, Set
 
 
 class CompetitorType(DjangoObjectType):
@@ -31,20 +30,25 @@ class GameType(DjangoObjectType):
         model = Game
 
 
+class SetType(DjangoObjectType):
+    class Meta:
+        model = Set
+
+
 class Query(object):
     competitors = graphene.List(CompetitorType)
     tourneys = graphene.List(TourneyType)
     matches = graphene.List(MatchType)
-
+    sets = graphene.List(SetType)
     teams = graphene.List(TeamType)
     games = graphene.List(GameType)
 
     competitor = graphene.Field(CompetitorType, id=graphene.Int(), name=graphene.String())
     tourney = graphene.Field(TourneyType, id=graphene.Int(), name=graphene.String())
     match = graphene.Field(MatchType, id=graphene.Int())
-
     team = graphene.Field(TeamType, id=graphene.Int(), name=graphene.String())
     game = graphene.Field(GameType, id=graphene.Int(), name=graphene.String())
+    set = graphene.Field(SetType, id=graphene.Int())
 
     def resolve_competitors(self, info, **kwargs):
         return Competitor.objects.all()
@@ -60,6 +64,9 @@ class Query(object):
 
     def resolve_games(self, info, **kwargs):
         return Game.objects.all()
+
+    def resolve_sets(self, info, **kwargs):
+        return Set.objects.all()
 
     def resolve_competitor(self, info, **kwargs):
         id = kwargs.get('id')
@@ -106,6 +113,13 @@ class Query(object):
             return Game.objects.get(pk=id)
         if name is not None:
             return Game.objects.get(name=name)
+        return None
+
+    def resolve_set(self, info, **kwargs):
+        id = kwargs.get('id')
+
+        if id is not None:
+            return Set.objects.get(pk=id)
         return None
 
 
