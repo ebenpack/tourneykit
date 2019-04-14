@@ -1,6 +1,9 @@
 import React from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 
+import DashboardPage from '../dashboardPage/DashboardPage';
+
+
 const AppContainer = () => {
 	return (
 		<Router>
@@ -12,9 +15,11 @@ const AppContainer = () => {
 const App = () => {
 	return (
 		<div className="wrap">
+			<header></header>
 			<div className="app">
-				hello world!
+				<Route path="/" component={DashboardPage} />
 			</div>
+			<footer></footer>
 		</div>
 	);
 };

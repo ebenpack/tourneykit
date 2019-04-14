@@ -3,8 +3,8 @@ from django.contrib.auth.models import User
 
 
 class DateTimeModel(models.Model):
-    created_at = models.DateTimeField(auto_now_add=False, editable=False)
-    updated_at = models.DateTimeField(auto_now=False, editable=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         abstract = True
