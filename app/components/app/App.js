@@ -13,7 +13,7 @@ const App = () => {
 	return (
 		<div className="wrap">
 			<div className="app">
-				hello world
+				hello world!
 			</div>
 		</div>
 	);

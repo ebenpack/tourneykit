@@ -4,7 +4,7 @@
   "description": "",
   "main": "app/app.js",
   "scripts": {
-    "start": "webpack-dev-server --config ./app/webpack.config.dev.js --watch --history-api-fallback",
+    "start": "webpack --config ./app/webpack.config.dev.js --watch --history-api-fallback",
     "build": "webpack --config ./app/webpack.config.prod.js"
   },
   "repository": {
@@ -36,7 +36,6 @@
     "redux": "^4.0.1",
     "style-loader": "^0.23.1",
     "webpack": "^4.29.6",
-    "webpack-cli": "^3.3.0",
-    "webpack-dev-server": "^3.3.1"
+    "webpack-cli": "^3.3.0"
   }
 }
