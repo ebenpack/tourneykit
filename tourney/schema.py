@@ -1,6 +1,7 @@
 import graphene
 
 from graphene_django.types import DjangoObjectType
+from graphene_django.rest_framework.mutation import SerializerMutation
 
 from tourney.models import Competitor, Team, Game, Tourney, Match
 
@@ -106,3 +107,73 @@ class Query(object):
         if name is not None:
             return Game.objects.get(name=name)
         return None
+
+
+class CreateGame(graphene.Mutation):
+    class Arguments:
+        name = graphene.String()
+
+    game = graphene.Field(lambda: GameType)
+    ok = graphene.Boolean()
+
+    def mutate(self, info, name):
+        game = Game.objects.create(name=name)
+        ok = True
+        return CreateGame(game=game, ok=ok)
+
+
+class CreateCompetitor(graphene.Mutation):
+    class Arguments:
+        name = graphene.String()
+
+    competitor = graphene.Field(lambda: CompetitorType)
+    ok = graphene.Boolean()
+
+    def mutate(self, info, name):
+        game = Competitor.objects.create(name=name)
+        ok = True
+        return CreateCompetitor(game=game, ok=ok)
+
+
+class CreateTeam(graphene.Mutation):
+    class Arguments:
+        name = graphene.String()
+
+    team = graphene.Field(lambda: TeamType)
+    ok = graphene.Boolean()
+
+    def mutate(self, info, name):
+        team = Team.objects.create(name=name)
+        ok = True
+        return CreateTeam(team=team, ok=ok)
+
+class CreateTourney(graphene.Mutation):
+    class Arguments:
+        name = graphene.String()
+
+    tourney = graphene.Field(lambda: TourneyType)
+    ok = graphene.Boolean()
+
+    def mutate(self, info, name):
+        tourney = Tourney.objects.create(name=name)
+        ok = True
+        return CreateTourney(tourney=tourney, ok=ok)
+
+class CreateMatch(graphene.Mutation):
+    class Arguments:
+        name = graphene.String()
+
+    match = graphene.Field(lambda: MatchType)
+    ok = graphene.Boolean()
+
+    def mutate(self, info, name):
+        match = Match.objects.create(name=name)
+        ok = True
+        return CreateMatch(match=match, ok=ok)
+
+class Mutations(graphene.ObjectType):
+    create_game = CreateGame.Field()
+    create_competitor = CreateCompetitor.Field()
+    create_team = CreateTeam.Field()
+    create_tourney = CreateTourney.Field()
+    create_match = CreateMatch.Field()
