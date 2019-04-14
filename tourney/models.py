@@ -54,8 +54,8 @@ class TeamTourney(DateTimeModel):
 class Match(DateTimeModel):
     round = models.IntegerField()
     tourney = models.ForeignKey(Tourney, on_delete=models.CASCADE)
-    team1 = models.ForeignKey(Competitor, on_delete=models.CASCADE, related_name="team1", null=True)
-    team2 = models.ForeignKey(Competitor, on_delete=models.CASCADE, related_name="team2", null=True)
+    team1 = models.ForeignKey(TeamTourney, on_delete=models.CASCADE, related_name="team1", null=True)
+    team2 = models.ForeignKey(TeamTourney, on_delete=models.CASCADE, related_name="team2", null=True)
 
     def __str__(self):
         return f"{self.tourney.name} - {self.team1.name} vs. {self.team2.name}"
