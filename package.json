@@ -1,0 +1,40 @@
+{
+  "name": "tourneykit",
+  "version": "0.1.0",
+  "description": "",
+  "main": "app/app.js",
+  "scripts": {
+    "start": "webpack-dev-server --config ./app/webpack.config.dev.js --watch --history-api-fallback",
+    "build": "webpack --config ./app/webpack.config.prod.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ebenpack/tourneykit.git"
+  },
+  "author": "Eben Packwood",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ebenpack/tourneykit/issues"
+  },
+  "homepage": "https://github.com/ebenpack/tourneykit#readme",
+  "dependencies": {
+    "@babel/core": "^7.4.3",
+    "@babel/preset-env": "^7.4.3",
+    "@babel/preset-react": "^7.0.0",
+    "babel-loader": "^8.0.5",
+    "css-loader": "^2.1.1",
+    "extract-text-webpack-plugin": "^4.0.0-beta.0",
+    "file-loader": "^3.0.1",
+    "formik": "^1.5.2",
+    "less-loader": "^4.1.0",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "react-redux": "^7.0.2",
+    "react-router": "^5.0.0",
+    "redux": "^4.0.1",
+    "style-loader": "^0.23.1",
+    "webpack": "^4.29.6",
+    "webpack-cli": "^3.3.0",
+    "webpack-dev-server": "^3.3.1"
+  }
+}
