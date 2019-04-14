@@ -2,7 +2,15 @@ from django.db import models
 from django.contrib.auth.models import User
 
 
-class Competitor(models.Model):
+class DateTimeModel(models.Model):
+    created_at = models.DateTimeField(auto_now_add=False, editable=False)
+    updated_at = models.DateTimeField(auto_now=False, editable=False)
+
+    class Meta:
+        abstract = True
+
+
+class Competitor(DateTimeModel):
     name = models.CharField(max_length=100)
     team = models.ForeignKey('Team', on_delete=models.CASCADE)
 
@@ -10,21 +18,21 @@ class Competitor(models.Model):
         return self.name
 
 
-class Team(models.Model):
+class Team(DateTimeModel):
     name = models.CharField(max_length=100)
 
     def __str__(self):
         return self.name
 
 
-class Game(models.Model):
+class Game(DateTimeModel):
     name = models.CharField(max_length=100)
 
     def __str__(self):
         return self.name
 
 
-class Tourney(models.Model):
+class Tourney(DateTimeModel):
     name = models.CharField(max_length=100)
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
     admin = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -34,7 +42,7 @@ class Tourney(models.Model):
         return self.name
 
 
-class TeamTourney(models.Model):
+class TeamTourney(DateTimeModel):
     seed = models.IntegerField()
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
     tourney = models.ForeignKey(Tourney, on_delete=models.CASCADE)
@@ -43,7 +51,7 @@ class TeamTourney(models.Model):
         return f"{self.tourney.name} - {self.team.name}"
 
 
-class Match(models.Model):
+class Match(DateTimeModel):
     round = models.IntegerField()
     tourney = models.ForeignKey(Tourney, on_delete=models.CASCADE)
     team1 = models.ForeignKey(Competitor, on_delete=models.CASCADE, related_name="team1", null=True)
@@ -53,7 +61,7 @@ class Match(models.Model):
         return f"{self.tourney.name} - {self.team1.name} vs. {self.team2.name}"
 
 
-class Set(models.Model):
+class Set(DateTimeModel):
     match = models.ForeignKey(Match, on_delete=models.CASCADE)
     team1_score = models.IntegerField()
     team2_score = models.IntegerField()
