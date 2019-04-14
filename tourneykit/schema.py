@@ -1,6 +1,6 @@
 import graphene
 
-from tourney.schema import Query
+from tourney.schema import Query, Mutations
 
 
 class Query(Query, graphene.ObjectType):
@@ -9,4 +9,4 @@ class Query(Query, graphene.ObjectType):
     pass
 
 
-schema = graphene.Schema(query=Query)
+schema = graphene.Schema(query=Query, mutation=Mutations)
