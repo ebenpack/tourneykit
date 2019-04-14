@@ -54,7 +54,7 @@ class Query(object):
         return Competitor.objects.all()
 
     def resolve_tourneys(self, info, **kwargs):
-        return Tourney.objects.prefetch_related('competitors').all()
+        return Tourney.objects.all()
 
     def resolve_matches(self, info, **kwargs):
         return Match.objects.all()
