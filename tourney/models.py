@@ -16,6 +16,7 @@ class Team(models.Model):
     def __str__(self):
         return self.name
 
+
 class Game(models.Model):
     name = models.CharField(max_length=100)
 
@@ -43,9 +44,19 @@ class TeamTourney(models.Model):
 
 
 class Match(models.Model):
+    round = models.IntegerField()
     tourney = models.ForeignKey(Tourney, on_delete=models.CASCADE)
-    team1 = models.ForeignKey(Competitor, on_delete=models.CASCADE, related_name="team1")
-    team2 = models.ForeignKey(Competitor, on_delete=models.CASCADE, related_name="team2")
+    team1 = models.ForeignKey(Competitor, on_delete=models.CASCADE, related_name="team1", null=True)
+    team2 = models.ForeignKey(Competitor, on_delete=models.CASCADE, related_name="team2", null=True)
 
     def __str__(self):
         return f"{self.tourney.name} - {self.team1.name} vs. {self.team2.name}"
+
+
+class Set(models.Model):
+    match = models.ForeignKey(Match, on_delete=models.CASCADE)
+    team1_score = models.IntegerField()
+    team2_score = models.IntegerField()
+
+    def __str__(self):
+        return f"{str(self.match.name)}"

@@ -97,7 +97,7 @@ class Query(object):
         if name is not None:
             return Team.objects.get(name=name)
         return None
-    
+
     def resolve_game(self, info, **kwargs):
         id = kwargs.get('id')
         name = kwargs.get('name')
@@ -147,6 +147,7 @@ class CreateTeam(graphene.Mutation):
         ok = True
         return CreateTeam(team=team, ok=ok)
 
+
 class CreateTourney(graphene.Mutation):
     class Arguments:
         name = graphene.String()
@@ -159,21 +160,9 @@ class CreateTourney(graphene.Mutation):
         ok = True
         return CreateTourney(tourney=tourney, ok=ok)
 
-class CreateMatch(graphene.Mutation):
-    class Arguments:
-        name = graphene.String()
-
-    match = graphene.Field(lambda: MatchType)
-    ok = graphene.Boolean()
-
-    def mutate(self, info, name):
-        match = Match.objects.create(name=name)
-        ok = True
-        return CreateMatch(match=match, ok=ok)
 
 class Mutations(graphene.ObjectType):
     create_game = CreateGame.Field()
     create_competitor = CreateCompetitor.Field()
     create_team = CreateTeam.Field()
     create_tourney = CreateTourney.Field()
-    create_match = CreateMatch.Field()
