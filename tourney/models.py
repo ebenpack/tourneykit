@@ -11,11 +11,11 @@ class DateTimeModel(models.Model):
 
 
 class Competitor(DateTimeModel):
-    name = models.CharField(max_length=100)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     team = models.ForeignKey('Team', on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.name
+        return self.user.username
 
 
 class Team(DateTimeModel):
@@ -58,7 +58,7 @@ class Match(DateTimeModel):
     team2 = models.ForeignKey(TeamTourney, on_delete=models.CASCADE, related_name="team2", null=True)
 
     def __str__(self):
-        return f"{self.tourney.name} - {self.team1.name} vs. {self.team2.name}"
+        return f"{self.tourney.name} - {self.team1.team.name} vs. {self.team2.team.name}"
 
 
 class Set(DateTimeModel):
