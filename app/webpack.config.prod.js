@@ -1,5 +1,7 @@
 const config = require('./webpack.config.js');
 
-config.mode = 'production';
+config.mode = 'development';
+
+config.devtool = 'source-map';
 
 module.exports = config;
