@@ -126,5 +126,13 @@ STATICFILES_DIRS = [
 ]
 
 GRAPHENE = {
-    'SCHEMA': 'tourneykit.schema.schema'
+    'SCHEMA': 'tourneykit.schema.schema',
+    'MIDDLEWARE': [
+        'graphql_jwt.middleware.JSONWebTokenMiddleware',
+    ],
 }
+
+AUTHENTICATION_BACKENDS = [
+    'graphql_jwt.backends.JSONWebTokenBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]
