@@ -8,5 +8,6 @@ from tourney.views import spa
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('graphql/', GraphQLView.as_view(graphiql=True)),
+    path('<path:path>', spa),
     path('', spa),
 ]

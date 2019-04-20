@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 
 
-def spa(request):
+def spa(request, path = ""):
 	html = """
 		<!doctype html>
 		<html>
