@@ -5,6 +5,7 @@ import { ApolloProvider } from 'react-apollo';
 import Cookies from 'js-cookie';
 
 import DashboardPage from '../dashboardPage/DashboardPage';
+import TourneyPage from '../tourneyPage/TourneyPage';
 
 
 const csrfToken = Cookies.get('csrftoken');
@@ -33,7 +34,8 @@ const App = () => {
 				<h1>Tourneykit!</h1>
 			</header>
 			<div className="app">
-				<Route path="/" component={DashboardPage} />
+				<Route exact path="/" component={DashboardPage} />
+                <Route path="/tourney/:id" component={TourneyPage} />
 			</div>
 			<footer></footer>
 		</div>

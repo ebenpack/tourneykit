@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react';
+import { Link } from 'react-router-dom'
 import { Query } from 'react-apollo';
 import gql from 'graphql-tag';
-
 
 const DashboardPage = () => {
 	return (
@@ -23,7 +23,7 @@ const DashboardPage = () => {
 							? <p>Loading tournaments...</p>
 							: (
 								data.tourneys.map((tourney) => {
-									return <p key={tourney.id}>{ tourney.name }</p>;
+									return <p key={tourney.id}><Link to={`/tourney/${tourney.id}`}>{ tourney.name }</Link></p>;
 								})
 							)
 						}
