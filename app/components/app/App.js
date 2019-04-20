@@ -2,7 +2,10 @@ import React from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import ApolloClient from 'apollo-boost';
 import { ApolloProvider } from 'react-apollo';
+import { Provider } from 'react-redux'
 import Cookies from 'js-cookie';
+
+import store from './appStore';
 
 import DashboardPage from '../dashboardPage/DashboardPage';
 import TourneyPage from '../tourneyPage/TourneyPage';
@@ -20,9 +23,11 @@ const apolloClient = new ApolloClient({
 const AppContainer = () => {
 	return (
 		<ApolloProvider client={apolloClient}>
-			<Router>
-				<App />
-			</Router>
+            <Provider store={store}>
+                <Router>
+                    <App />
+                </Router>
+            </Provider>
 		</ApolloProvider>
 	);
 };

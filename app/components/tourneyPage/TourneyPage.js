@@ -3,6 +3,7 @@ import { Query } from 'react-apollo';
 import gql from 'graphql-tag';
 
 import Tourney from './Tourney';
+import AuthenticatedPage from '../authenticatedPage/AuthenticatedPage';
 
 const TourneyPage = ({ match: { params: { id } } }) => {
 	return (
@@ -46,4 +47,6 @@ const TourneyPage = ({ match: { params: { id } } }) => {
 	);
 };
 
-export default TourneyPage;
+const AuthenticatedTourneyPage = props => <AuthenticatedPage><TourneyPage {...props} /></AuthenticatedPage>
+
+export default AuthenticatedTourneyPage;
