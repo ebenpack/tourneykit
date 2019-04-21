@@ -17,11 +17,12 @@ const LoginPage = ({ setToken, setName }) => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     return (
-        <Mutation 
+        <Mutation
             mutation={LOGIN} 
-            onCompleted={({ tokenAuth }) => {
-                    setToken(tokenAuth);
+            onCompleted={({ tokenAuth: { token } }) => {
+                    setToken(token);
                     setName(username);
+                    window.localStorage ? window.localStorage.setItem('JWT', token) : null;
                 }
             }
         >
