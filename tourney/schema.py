@@ -3,6 +3,7 @@ from django.contrib.auth import get_user_model
 import graphene
 import graphql_jwt
 from graphene_django.types import DjangoObjectType
+from graphql_jwt.decorators import login_required
 
 from tourney.models import Competitor, Team, Game, Tourney, Match, Set
 
@@ -97,6 +98,7 @@ class Query(object):
             return Competitor.objects.get(name=name)
         return None
 
+    @login_required
     def resolve_tourney(self, info, **kwargs):
         id = kwargs.get('id')
         name = kwargs.get('name')
