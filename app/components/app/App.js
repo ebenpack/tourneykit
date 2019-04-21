@@ -1,26 +1,12 @@
 import React from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
-import ApolloClient from 'apollo-boost';
 import { ApolloProvider } from 'react-apollo';
 import { Provider } from 'react-redux'
-import Cookies from 'js-cookie';
-
-import store from './appStore';
 
 import DashboardPage from '../dashboardPage/DashboardPage';
 import TourneyPage from '../tourneyPage/TourneyPage';
 
-
-const csrfToken = Cookies.get('csrftoken');
-
-const apolloClient = new ApolloClient({
-	uri: '/graphql/',
-	headers: {
-		'X-CSRFToken': csrfToken
-	},
-});
-
-const AppContainer = () => {
+const AppContainer = ({ apolloClient, store }) => {
 	return (
 		<ApolloProvider client={apolloClient}>
             <Provider store={store}>
