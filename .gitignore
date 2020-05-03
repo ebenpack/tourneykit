@@ -3,3 +3,5 @@
 __pycache__/
 node_modules
 *.sqlite3
+spa_index.html
+static/
