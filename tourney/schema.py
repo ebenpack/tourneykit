@@ -1,64 +1,109 @@
-from django.contrib.auth import get_user_model
+from django.contrib.auth import authenticate, login, logout, get_user_model
 
 import graphene
 import graphql_jwt
+from graphene import relay
 from graphene_django.types import DjangoObjectType
 from graphql_jwt.decorators import login_required
 
 from tourney.models import Competitor, Team, Game, Tourney, Match, Set
 
+
 class CompetitorType(DjangoObjectType):
     class Meta:
         model = Competitor
+        interfaces = (relay.Node,)
 
 
 class TourneyType(DjangoObjectType):
     class Meta:
         model = Tourney
+        interfaces = (relay.Node,)
 
 
 class MatchType(DjangoObjectType):
     class Meta:
         model = Match
+        interfaces = (relay.Node,)
 
 
 class TeamType(DjangoObjectType):
     class Meta:
         model = Team
+        interfaces = (relay.Node,)
 
 
 class GameType(DjangoObjectType):
     class Meta:
         model = Game
+        interfaces = (relay.Node,)
 
 
 class SetType(DjangoObjectType):
     class Meta:
         model = Set
+        interfaces = (relay.Node,)
 
 
 class UserType(DjangoObjectType):
     class Meta:
         model = get_user_model()
+        interfaces = (relay.Node,)
+        fields = ("id", "username")
+
+
+class CompetitorsTypeConnection(relay.Connection):
+    class Meta:
+        node = CompetitorType
+
+
+class TourneysTypeConnection(relay.Connection):
+    class Meta:
+        node = TourneyType
+
+
+class MatchesTypeConnection(relay.Connection):
+    class Meta:
+        node = MatchType
+
+
+class SetsTypeConnection(relay.Connection):
+    class Meta:
+        node = SetType
+
+
+class TeamsTypeConnection(relay.Connection):
+    class Meta:
+        node = TeamType
+
+
+class GamesTypeConnection(relay.Connection):
+    class Meta:
+        node = GameType
+
+
+class UsersTypeConnection(relay.Connection):
+    class Meta:
+        node = UserType
 
 
 class Query(object):
-    competitors = graphene.List(CompetitorType)
-    tourneys = graphene.List(TourneyType)
-    matches = graphene.List(MatchType)
-    sets = graphene.List(SetType)
-    teams = graphene.List(TeamType)
-    games = graphene.List(GameType)
+    competitors = relay.ConnectionField(CompetitorsTypeConnection)
+    tourneys = relay.ConnectionField(TourneysTypeConnection)
+    matches = relay.ConnectionField(MatchesTypeConnection)
+    sets = relay.ConnectionField(SetsTypeConnection)
+    teams = relay.ConnectionField(TeamsTypeConnection)
+    games = relay.ConnectionField(GamesTypeConnection)
 
-    competitor = graphene.Field(CompetitorType, id=graphene.Int(), name=graphene.String())
-    tourney = graphene.Field(TourneyType, id=graphene.Int(), name=graphene.String())
-    match = graphene.Field(MatchType, id=graphene.Int())
-    team = graphene.Field(TeamType, id=graphene.Int(), name=graphene.String())
-    game = graphene.Field(GameType, id=graphene.Int(), name=graphene.String())
-    set = graphene.Field(SetType, id=graphene.Int())
+    competitor = relay.Node.Field(CompetitorType, name=graphene.String())
+    tourney = relay.Node.Field(TourneyType, name=graphene.String())
+    match = relay.Node.Field(MatchType)
+    team = relay.Node.Field(TeamType, name=graphene.String())
+    game = relay.Node.Field(GameType, name=graphene.String())
+    set = relay.Node.Field(SetType)
 
     me = graphene.Field(UserType)
-    users = graphene.List(UserType)
+    users = relay.ConnectionField(UsersTypeConnection)
 
     def resolve_users(self, info):
         return get_user_model().objects.all()
@@ -66,15 +111,14 @@ class Query(object):
     def resolve_me(self, info):
         user = info.context.user
         if user.is_anonymous:
-            raise Exception('Not logged in!')
-
+            return None
         return user
 
     def resolve_competitors(self, info, **kwargs):
         return Competitor.objects.all()
 
     def resolve_tourneys(self, info, **kwargs):
-        return Tourney.objects.all()
+        return Tourney.objects.all().order_by("-created_at")
 
     def resolve_matches(self, info, **kwargs):
         return Match.objects.all()
@@ -89,8 +133,8 @@ class Query(object):
         return Set.objects.all()
 
     def resolve_competitor(self, info, **kwargs):
-        id = kwargs.get('id')
-        name = kwargs.get('name')
+        id = kwargs.get("id")
+        name = kwargs.get("name")
 
         if id is not None:
             return Competitor.objects.get(pk=id)
@@ -100,8 +144,8 @@ class Query(object):
 
     @login_required
     def resolve_tourney(self, info, **kwargs):
-        id = kwargs.get('id')
-        name = kwargs.get('name')
+        id = kwargs.get("id")
+        name = kwargs.get("name")
 
         if id is not None:
             return Tourney.objects.get(pk=id)
@@ -110,15 +154,15 @@ class Query(object):
         return None
 
     def resolve_match(self, info, **kwargs):
-        id = kwargs.get('id')
+        id = kwargs.get("id")
 
         if id is not None:
             return Match.objects.get(pk=id)
         return None
 
     def resolve_team(self, info, **kwargs):
-        id = kwargs.get('id')
-        name = kwargs.get('name')
+        id = kwargs.get("id")
+        name = kwargs.get("name")
 
         if id is not None:
             return Team.objects.get(pk=id)
@@ -127,8 +171,8 @@ class Query(object):
         return None
 
     def resolve_game(self, info, **kwargs):
-        id = kwargs.get('id')
-        name = kwargs.get('name')
+        id = kwargs.get("id")
+        name = kwargs.get("name")
 
         if id is not None:
             return Game.objects.get(pk=id)
@@ -137,7 +181,7 @@ class Query(object):
         return None
 
     def resolve_set(self, info, **kwargs):
-        id = kwargs.get('id')
+        id = kwargs.get("id")
 
         if id is not None:
             return Set.objects.get(pk=id)
@@ -151,6 +195,7 @@ class CreateGame(graphene.Mutation):
     game = graphene.Field(lambda: GameType)
     ok = graphene.Boolean()
 
+    @login_required
     def mutate(self, info, name):
         game = Game.objects.create(name=name)
         ok = True
@@ -164,6 +209,7 @@ class CreateCompetitor(graphene.Mutation):
     competitor = graphene.Field(lambda: CompetitorType)
     ok = graphene.Boolean()
 
+    @login_required
     def mutate(self, info, name):
         game = Competitor.objects.create(name=name)
         ok = True
@@ -177,6 +223,7 @@ class CreateTeam(graphene.Mutation):
     team = graphene.Field(lambda: TeamType)
     ok = graphene.Boolean()
 
+    @login_required
     def mutate(self, info, name):
         team = Team.objects.create(name=name)
         ok = True
@@ -190,17 +237,68 @@ class CreateTourney(graphene.Mutation):
     tourney = graphene.Field(lambda: TourneyType)
     ok = graphene.Boolean()
 
+    @login_required
     def mutate(self, info, name):
         tourney = Tourney.objects.create(name=name)
         ok = True
         return CreateTourney(tourney=tourney, ok=ok)
 
 
+class Login(graphene.Mutation):
+    class Arguments:
+        username = graphene.String()
+        password = graphene.String()
+
+    user = graphene.Field(UserType)
+    ok = graphene.Boolean()
+
+    def mutate(self, info, username, password):
+        user = authenticate(info.context, username=username, password=password)
+        if user is not None:
+            login(info.context, user)
+            return Login(ok=True, user=user)
+        else:
+            return Login(ok=False, user=None)
+
+
+class Logout(graphene.Mutation):
+    ok = graphene.Boolean()
+
+    def mutate(self, info):
+        logout(info.context)
+        return Logout(ok=True)
+
+
+class SignUp(graphene.Mutation):
+    class Arguments:
+        username = graphene.String()
+        email = graphene.String()
+        password = graphene.String()
+        passwordVerify = graphene.String()
+
+    ok = graphene.Boolean()
+    user = graphene.Field(UserType)
+
+    def mutate(self, info, username, email, password, passwordVerify):
+        # TODO: VERIFY WITH EMAIL
+        if password != passwordVerify:
+            raise Exception("Password mismatch")
+
+        UserModel = get_user_model()
+        if UserModel.objects.filter(username=username).exists():
+            raise Exception("User already exists")
+
+        UserModel.objects.create_user(username=username, email=email, password=password)
+        user = authenticate(info.context, username=username, password=password)
+        login(info.context, user)
+        return SignUp(ok=True, user=user)
+
+
 class Mutations(graphene.ObjectType):
-    token_auth = graphql_jwt.ObtainJSONWebToken.Field()
-    verify_token = graphql_jwt.Verify.Field()
-    refresh_token = graphql_jwt.Refresh.Field()
-    create_game = CreateGame.Field()
-    create_competitor = CreateCompetitor.Field()
-    create_team = CreateTeam.Field()
-    create_tourney = CreateTourney.Field()
+    login = Login.Field()
+    logout = Logout.Field()
+    signUp = SignUp.Field()
+    createGame = CreateGame.Field()
+    createCompetitor = CreateCompetitor.Field()
+    createTeam = CreateTeam.Field()
+    createTourney = CreateTourney.Field()
