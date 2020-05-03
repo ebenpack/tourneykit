@@ -4,7 +4,8 @@ import graphene
 import graphql_jwt
 from graphene import relay
 from graphene_django.types import DjangoObjectType
-from graphql_jwt.decorators import login_required
+import graphene_django_optimizer as gql_optimizer
+
 
 from tourney.models import Competitor, Team, Game, Tourney, Match, Set
 
@@ -106,7 +107,7 @@ class Query(object):
     users = relay.ConnectionField(UsersTypeConnection)
 
     def resolve_users(self, info):
-        return get_user_model().objects.all()
+        return gql_optimizer.quer(get_user_model().objects.all(), info)
 
     def resolve_me(self, info):
         user = info.context.user
@@ -115,22 +116,22 @@ class Query(object):
         return user
 
     def resolve_competitors(self, info, **kwargs):
-        return Competitor.objects.all()
+        return gql_optimizer.query(Competitor.objects.all(), info)
 
     def resolve_tourneys(self, info, **kwargs):
-        return Tourney.objects.all().order_by("-created_at")
+        return gql_optimizer.query(Tourney.objects.all().order_by("-created_at"), info)
 
     def resolve_matches(self, info, **kwargs):
-        return Match.objects.all()
+        return gql_optimizer.query(Match.objects.all(), info)
 
     def resolve_teams(self, info, **kwargs):
-        return Team.objects.all()
+        return gql_optimizer.query(Team.objects.all(), info)
 
     def resolve_games(self, info, **kwargs):
-        return Game.objects.all()
+        return gql_optimizer.query(Game.objects.all(), info)
 
     def resolve_sets(self, info, **kwargs):
-        return Set.objects.all()
+        return gql_optimizer.query(Set.objects.all(), info)
 
     def resolve_competitor(self, info, **kwargs):
         id = kwargs.get("id")
@@ -142,7 +143,6 @@ class Query(object):
             return Competitor.objects.get(name=name)
         return None
 
-    @login_required
     def resolve_tourney(self, info, **kwargs):
         id = kwargs.get("id")
         name = kwargs.get("name")
@@ -195,7 +195,6 @@ class CreateGame(graphene.Mutation):
     game = graphene.Field(lambda: GameType)
     ok = graphene.Boolean()
 
-    @login_required
     def mutate(self, info, name):
         game = Game.objects.create(name=name)
         ok = True
@@ -209,7 +208,6 @@ class CreateCompetitor(graphene.Mutation):
     competitor = graphene.Field(lambda: CompetitorType)
     ok = graphene.Boolean()
 
-    @login_required
     def mutate(self, info, name):
         game = Competitor.objects.create(name=name)
         ok = True
@@ -223,7 +221,6 @@ class CreateTeam(graphene.Mutation):
     team = graphene.Field(lambda: TeamType)
     ok = graphene.Boolean()
 
-    @login_required
     def mutate(self, info, name):
         team = Team.objects.create(name=name)
         ok = True
@@ -237,7 +234,6 @@ class CreateTourney(graphene.Mutation):
     tourney = graphene.Field(lambda: TourneyType)
     ok = graphene.Boolean()
 
-    @login_required
     def mutate(self, info, name):
         tourney = Tourney.objects.create(name=name)
         ok = True
