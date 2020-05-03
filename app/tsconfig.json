@@ -1,0 +1,12 @@
+{
+    "compilerOptions": {
+        "outDir": "../static/",
+        "sourceMap": true,
+        "noImplicitAny": true,
+        "module": "es2015",
+        "moduleResolution": "node",
+        "target": "es2015",
+        "jsx": "react",
+        "allowSyntheticDefaultImports": true
+    }
+}
