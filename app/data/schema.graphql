@@ -1,0 +1,257 @@
+schema {
+  query: Query
+  mutation: Mutations
+}
+
+type CompetitorType implements Node {
+  id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  user: UserType!
+  team: TeamType!
+}
+
+type CompetitorTypeConnection {
+  pageInfo: PageInfo!
+  edges: [CompetitorTypeEdge]!
+}
+
+type CompetitorTypeEdge {
+  node: CompetitorType
+  cursor: String!
+}
+
+type CompetitorsTypeConnection {
+  pageInfo: PageInfo!
+  edges: [CompetitorsTypeEdge]!
+}
+
+type CompetitorsTypeEdge {
+  node: CompetitorType
+  cursor: String!
+}
+
+type CreateCompetitor {
+  competitor: CompetitorType
+  ok: Boolean
+}
+
+type CreateGame {
+  game: GameType
+  ok: Boolean
+}
+
+type CreateTeam {
+  team: TeamType
+  ok: Boolean
+}
+
+type CreateTourney {
+  tourney: TourneyType
+  ok: Boolean
+}
+
+scalar DateTime
+
+type GameType implements Node {
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  id: ID!
+  name: String!
+  tourneySet(before: String, after: String, first: Int, last: Int): TourneyTypeConnection!
+}
+
+type GamesTypeConnection {
+  pageInfo: PageInfo!
+  edges: [GamesTypeEdge]!
+}
+
+type GamesTypeEdge {
+  node: GameType
+  cursor: String!
+}
+
+type Login {
+  user: UserType
+  ok: Boolean
+}
+
+type Logout {
+  ok: Boolean
+}
+
+type MatchType implements Node {
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  id: ID!
+  round: Int!
+  tourney: TourneyType!
+  setSet(before: String, after: String, first: Int, last: Int): SetTypeConnection!
+}
+
+type MatchTypeConnection {
+  pageInfo: PageInfo!
+  edges: [MatchTypeEdge]!
+}
+
+type MatchTypeEdge {
+  node: MatchType
+  cursor: String!
+}
+
+type MatchesTypeConnection {
+  pageInfo: PageInfo!
+  edges: [MatchesTypeEdge]!
+}
+
+type MatchesTypeEdge {
+  node: MatchType
+  cursor: String!
+}
+
+type Mutations {
+  login(password: String, username: String): Login
+  logout: Logout
+  signUp(email: String, password: String, passwordVerify: String, username: String): SignUp
+  createGame(name: String): CreateGame
+  createCompetitor(name: String): CreateCompetitor
+  createTeam(name: String): CreateTeam
+  createTourney(name: String): CreateTourney
+}
+
+interface Node {
+  id: ID!
+}
+
+type PageInfo {
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: String
+  endCursor: String
+}
+
+type Query {
+  competitors(before: String, after: String, first: Int, last: Int): CompetitorsTypeConnection
+  tourneys(before: String, after: String, first: Int, last: Int): TourneysTypeConnection
+  matches(before: String, after: String, first: Int, last: Int): MatchesTypeConnection
+  sets(before: String, after: String, first: Int, last: Int): SetsTypeConnection
+  teams(before: String, after: String, first: Int, last: Int): TeamsTypeConnection
+  games(before: String, after: String, first: Int, last: Int): GamesTypeConnection
+  competitor(id: ID!): CompetitorType
+  tourney(id: ID!): TourneyType
+  match(id: ID!): MatchType
+  team(id: ID!): TeamType
+  game(id: ID!): GameType
+  set(id: ID!): SetType
+  me: UserType
+  users(before: String, after: String, first: Int, last: Int): UsersTypeConnection
+}
+
+type SetType implements Node {
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  id: ID!
+  match: MatchType!
+  team1Score: Int!
+  team2Score: Int!
+}
+
+type SetTypeConnection {
+  pageInfo: PageInfo!
+  edges: [SetTypeEdge]!
+}
+
+type SetTypeEdge {
+  node: SetType
+  cursor: String!
+}
+
+type SetsTypeConnection {
+  pageInfo: PageInfo!
+  edges: [SetsTypeEdge]!
+}
+
+type SetsTypeEdge {
+  node: SetType
+  cursor: String!
+}
+
+type SignUp {
+  ok: Boolean
+  user: UserType
+}
+
+type TeamType implements Node {
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  id: ID!
+  name: String!
+  competitorSet(before: String, after: String, first: Int, last: Int): CompetitorTypeConnection!
+  tourneySet(before: String, after: String, first: Int, last: Int): TourneyTypeConnection!
+}
+
+type TeamTypeConnection {
+  pageInfo: PageInfo!
+  edges: [TeamTypeEdge]!
+}
+
+type TeamTypeEdge {
+  node: TeamType
+  cursor: String!
+}
+
+type TeamsTypeConnection {
+  pageInfo: PageInfo!
+  edges: [TeamsTypeEdge]!
+}
+
+type TeamsTypeEdge {
+  node: TeamType
+  cursor: String!
+}
+
+type TourneyType implements Node {
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  id: ID!
+  name: String!
+  game: GameType!
+  admin: UserType!
+  teams(before: String, after: String, first: Int, last: Int): TeamTypeConnection!
+  matchSet(before: String, after: String, first: Int, last: Int): MatchTypeConnection!
+}
+
+type TourneyTypeConnection {
+  pageInfo: PageInfo!
+  edges: [TourneyTypeEdge]!
+}
+
+type TourneyTypeEdge {
+  node: TourneyType
+  cursor: String!
+}
+
+type TourneysTypeConnection {
+  pageInfo: PageInfo!
+  edges: [TourneysTypeEdge]!
+}
+
+type TourneysTypeEdge {
+  node: TourneyType
+  cursor: String!
+}
+
+type UserType implements Node {
+  id: ID!
+  username: String!
+}
+
+type UsersTypeConnection {
+  pageInfo: PageInfo!
+  edges: [UsersTypeEdge]!
+}
+
+type UsersTypeEdge {
+  node: UserType
+  cursor: String!
+}
