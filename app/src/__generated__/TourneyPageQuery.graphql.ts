@@ -33,6 +33,7 @@ export type TourneyPageQueryResponse = {
                 readonly node: {
                     readonly id: string;
                     readonly round: number;
+                    readonly seed: number;
                     readonly completed: boolean;
                     readonly winner: {
                         readonly team: {
@@ -96,6 +97,7 @@ query TourneyPageQuery(
         node {
           id
           round
+          seed
           completed
           winner {
             team {
@@ -251,9 +253,15 @@ const node: ConcreteRequest = (function () {
         "alias": null,
         "args": null,
         "kind": "ScalarField",
-        "name": "completed",
+        "name": "seed",
         "storageKey": null
     } as any), v9 = ({
+        "alias": null,
+        "args": null,
+        "kind": "ScalarField",
+        "name": "completed",
+        "storageKey": null
+    } as any), v10 = ({
         "alias": null,
         "args": null,
         "concreteType": "TeamType",
@@ -264,12 +272,6 @@ const node: ConcreteRequest = (function () {
             (v3 /*: any*/)
         ],
         "storageKey": null
-    } as any), v10 = ({
-        "alias": null,
-        "args": null,
-        "kind": "ScalarField",
-        "name": "seed",
-        "storageKey": null
     } as any), v11 = ({
         "alias": null,
         "args": null,
@@ -277,9 +279,9 @@ const node: ConcreteRequest = (function () {
         "name": "eliminated",
         "storageKey": null
     } as any), v12 = [
-        (v10 /*: any*/),
+        (v8 /*: any*/),
         (v11 /*: any*/),
-        (v9 /*: any*/)
+        (v10 /*: any*/)
     ], v13 = ({
         "alias": null,
         "args": null,
@@ -293,7 +295,7 @@ const node: ConcreteRequest = (function () {
         ],
         "storageKey": null
     } as any), v14 = [
-        (v10 /*: any*/),
+        (v8 /*: any*/),
         (v11 /*: any*/),
         (v13 /*: any*/),
         (v2 /*: any*/)
@@ -344,6 +346,7 @@ const node: ConcreteRequest = (function () {
                                                 (v2 /*: any*/),
                                                 (v7 /*: any*/),
                                                 (v8 /*: any*/),
+                                                (v9 /*: any*/),
                                                 {
                                                     "alias": null,
                                                     "args": null,
@@ -352,7 +355,7 @@ const node: ConcreteRequest = (function () {
                                                     "name": "winner",
                                                     "plural": false,
                                                     "selections": [
-                                                        (v9 /*: any*/)
+                                                        (v10 /*: any*/)
                                                     ],
                                                     "storageKey": null
                                                 },
@@ -436,6 +439,7 @@ const node: ConcreteRequest = (function () {
                                                 (v2 /*: any*/),
                                                 (v7 /*: any*/),
                                                 (v8 /*: any*/),
+                                                (v9 /*: any*/),
                                                 {
                                                     "alias": null,
                                                     "args": null,
@@ -488,9 +492,9 @@ const node: ConcreteRequest = (function () {
             "metadata": {},
             "name": "TourneyPageQuery",
             "operationKind": "query",
-            "text": "query TourneyPageQuery(\n  $tourneyId: ID!\n) {\n  tourney(id: $tourneyId) {\n    id\n    name\n    game {\n      id\n      name\n    }\n    teams {\n      edges {\n        node {\n          id\n          name\n          competitorSet {\n            edges {\n              node {\n                id\n              }\n            }\n          }\n        }\n      }\n    }\n    matchSet(orderBy: \"round\") {\n      edges {\n        node {\n          id\n          round\n          completed\n          winner {\n            team {\n              name\n              id\n            }\n            id\n          }\n          team1 {\n            seed\n            eliminated\n            team {\n              name\n              id\n            }\n            id\n          }\n          team2 {\n            seed\n            eliminated\n            team {\n              name\n              id\n            }\n            id\n          }\n        }\n      }\n    }\n  }\n}\n"
+            "text": "query TourneyPageQuery(\n  $tourneyId: ID!\n) {\n  tourney(id: $tourneyId) {\n    id\n    name\n    game {\n      id\n      name\n    }\n    teams {\n      edges {\n        node {\n          id\n          name\n          competitorSet {\n            edges {\n              node {\n                id\n              }\n            }\n          }\n        }\n      }\n    }\n    matchSet(orderBy: \"round\") {\n      edges {\n        node {\n          id\n          round\n          seed\n          completed\n          winner {\n            team {\n              name\n              id\n            }\n            id\n          }\n          team1 {\n            seed\n            eliminated\n            team {\n              name\n              id\n            }\n            id\n          }\n          team2 {\n            seed\n            eliminated\n            team {\n              name\n              id\n            }\n            id\n          }\n        }\n      }\n    }\n  }\n}\n"
         }
     } as any;
 })();
-(node as any).hash = 'fc97470bded119a006a65752f35e1abe';
+(node as any).hash = 'e7bb86a02046f4792d6f63303340e04c';
 export default node;

@@ -88,6 +88,7 @@ type MatchType implements Node {
   seed: Int!
   tourney: TourneyType!
   completed: Boolean!
+  bye: Boolean!
   winner: TeamTourneyType
   team1: TeamTourneyType
   team2: TeamTourneyType
@@ -246,9 +247,9 @@ type TeamsTypeEdge {
 }
 
 enum TourneyStatus {
-  SETUP
-  RUNNING
-  FINISHED
+  S
+  R
+  F
 }
 
 type TourneyType implements Node {
