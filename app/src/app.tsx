@@ -1,13 +1,15 @@
 import "@babel/polyfill";
-import * as React from 'react';
-import * as ReactDOM from 'react-dom';
+import * as React from "react";
+import * as ReactDOM from "react-dom";
 
-import '../styles/style.scss';
+import "../styles/style.scss";
 
-import App from './components/app/App';
+import App from "./components/app/App";
 
 declare global {
-    interface Window { startApp: any; }
+    interface Window {
+        startApp: any;
+    }
 }
 
 interface startAppProps {
