@@ -41,6 +41,7 @@ const tourneyQuery = graphql`
                     node {
                         id
                         round
+                        seed
                         completed
                         winner {
                             team { name }
