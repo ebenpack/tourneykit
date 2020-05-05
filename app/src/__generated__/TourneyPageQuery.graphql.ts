@@ -33,9 +33,29 @@ export type TourneyPageQueryResponse = {
                 readonly node: {
                     readonly id: string;
                     readonly round: number;
+                    readonly completed: boolean;
+                    readonly winner: {
+                        readonly team: {
+                            readonly name: string;
+                        };
+                    } | null;
+                    readonly team1: {
+                        readonly seed: number;
+                        readonly eliminated: boolean;
+                        readonly team: {
+                            readonly name: string;
+                        };
+                    } | null;
+                    readonly team2: {
+                        readonly seed: number;
+                        readonly eliminated: boolean;
+                        readonly team: {
+                            readonly name: string;
+                        };
+                    } | null;
                 } | null;
             } | null>;
-        };
+        } | null;
     } | null;
 };
 export type TourneyPageQuery = {
@@ -71,11 +91,37 @@ query TourneyPageQuery(
         }
       }
     }
-    matchSet {
+    matchSet(orderBy: "round") {
       edges {
         node {
           id
           round
+          completed
+          winner {
+            team {
+              name
+              id
+            }
+            id
+          }
+          team1 {
+            seed
+            eliminated
+            team {
+              name
+              id
+            }
+            id
+          }
+          team2 {
+            seed
+            eliminated
+            team {
+              name
+              id
+            }
+            id
+          }
         }
       }
     }
@@ -91,103 +137,243 @@ const node: ConcreteRequest = (function () {
             "name": "tourneyId",
             "type": "ID!"
         } as any)
-    ], v1 = ({
+    ], v1 = [
+        ({
+            "kind": "Variable",
+            "name": "id",
+            "variableName": "tourneyId"
+        } as any)
+    ], v2 = ({
         "alias": null,
         "args": null,
         "kind": "ScalarField",
         "name": "id",
         "storageKey": null
-    } as any), v2 = ({
+    } as any), v3 = ({
         "alias": null,
         "args": null,
         "kind": "ScalarField",
         "name": "name",
         "storageKey": null
-    } as any), v3 = [
+    } as any), v4 = ({
+        "alias": null,
+        "args": null,
+        "concreteType": "GameType",
+        "kind": "LinkedField",
+        "name": "game",
+        "plural": false,
+        "selections": [
+            (v2 /*: any*/),
+            (v3 /*: any*/)
+        ],
+        "storageKey": null
+    } as any), v5 = ({
+        "alias": null,
+        "args": null,
+        "concreteType": "TeamTypeConnection",
+        "kind": "LinkedField",
+        "name": "teams",
+        "plural": false,
+        "selections": [
+            {
+                "alias": null,
+                "args": null,
+                "concreteType": "TeamTypeEdge",
+                "kind": "LinkedField",
+                "name": "edges",
+                "plural": true,
+                "selections": [
+                    {
+                        "alias": null,
+                        "args": null,
+                        "concreteType": "TeamType",
+                        "kind": "LinkedField",
+                        "name": "node",
+                        "plural": false,
+                        "selections": [
+                            (v2 /*: any*/),
+                            (v3 /*: any*/),
+                            {
+                                "alias": null,
+                                "args": null,
+                                "concreteType": "CompetitorTypeConnection",
+                                "kind": "LinkedField",
+                                "name": "competitorSet",
+                                "plural": false,
+                                "selections": [
+                                    {
+                                        "alias": null,
+                                        "args": null,
+                                        "concreteType": "CompetitorTypeEdge",
+                                        "kind": "LinkedField",
+                                        "name": "edges",
+                                        "plural": true,
+                                        "selections": [
+                                            {
+                                                "alias": null,
+                                                "args": null,
+                                                "concreteType": "CompetitorType",
+                                                "kind": "LinkedField",
+                                                "name": "node",
+                                                "plural": false,
+                                                "selections": [
+                                                    (v2 /*: any*/)
+                                                ],
+                                                "storageKey": null
+                                            }
+                                        ],
+                                        "storageKey": null
+                                    }
+                                ],
+                                "storageKey": null
+                            }
+                        ],
+                        "storageKey": null
+                    }
+                ],
+                "storageKey": null
+            }
+        ],
+        "storageKey": null
+    } as any), v6 = [
         ({
-            "alias": null,
-            "args": [
-                {
-                    "kind": "Variable",
-                    "name": "id",
-                    "variableName": "tourneyId"
-                }
-            ],
-            "concreteType": "TourneyType",
-            "kind": "LinkedField",
-            "name": "tourney",
-            "plural": false,
+            "kind": "Literal",
+            "name": "orderBy",
+            "value": "round"
+        } as any)
+    ], v7 = ({
+        "alias": null,
+        "args": null,
+        "kind": "ScalarField",
+        "name": "round",
+        "storageKey": null
+    } as any), v8 = ({
+        "alias": null,
+        "args": null,
+        "kind": "ScalarField",
+        "name": "completed",
+        "storageKey": null
+    } as any), v9 = ({
+        "alias": null,
+        "args": null,
+        "concreteType": "TeamType",
+        "kind": "LinkedField",
+        "name": "team",
+        "plural": false,
+        "selections": [
+            (v3 /*: any*/)
+        ],
+        "storageKey": null
+    } as any), v10 = ({
+        "alias": null,
+        "args": null,
+        "kind": "ScalarField",
+        "name": "seed",
+        "storageKey": null
+    } as any), v11 = ({
+        "alias": null,
+        "args": null,
+        "kind": "ScalarField",
+        "name": "eliminated",
+        "storageKey": null
+    } as any), v12 = [
+        (v10 /*: any*/),
+        (v11 /*: any*/),
+        (v9 /*: any*/)
+    ], v13 = ({
+        "alias": null,
+        "args": null,
+        "concreteType": "TeamType",
+        "kind": "LinkedField",
+        "name": "team",
+        "plural": false,
+        "selections": [
+            (v3 /*: any*/),
+            (v2 /*: any*/)
+        ],
+        "storageKey": null
+    } as any), v14 = [
+        (v10 /*: any*/),
+        (v11 /*: any*/),
+        (v13 /*: any*/),
+        (v2 /*: any*/)
+    ];
+    return {
+        "fragment": {
+            "argumentDefinitions": (v0 /*: any*/),
+            "kind": "Fragment",
+            "metadata": null,
+            "name": "TourneyPageQuery",
             "selections": [
-                (v1 /*: any*/),
-                (v2 /*: any*/),
                 {
                     "alias": null,
-                    "args": null,
-                    "concreteType": "GameType",
+                    "args": (v1 /*: any*/),
+                    "concreteType": "TourneyType",
                     "kind": "LinkedField",
-                    "name": "game",
+                    "name": "tourney",
                     "plural": false,
                     "selections": [
-                        (v1 /*: any*/),
-                        (v2 /*: any*/)
-                    ],
-                    "storageKey": null
-                },
-                {
-                    "alias": null,
-                    "args": null,
-                    "concreteType": "TeamTypeConnection",
-                    "kind": "LinkedField",
-                    "name": "teams",
-                    "plural": false,
-                    "selections": [
+                        (v2 /*: any*/),
+                        (v3 /*: any*/),
+                        (v4 /*: any*/),
+                        (v5 /*: any*/),
                         {
                             "alias": null,
-                            "args": null,
-                            "concreteType": "TeamTypeEdge",
+                            "args": (v6 /*: any*/),
+                            "concreteType": "MatchTypeConnection",
                             "kind": "LinkedField",
-                            "name": "edges",
-                            "plural": true,
+                            "name": "matchSet",
+                            "plural": false,
                             "selections": [
                                 {
                                     "alias": null,
                                     "args": null,
-                                    "concreteType": "TeamType",
+                                    "concreteType": "MatchTypeEdge",
                                     "kind": "LinkedField",
-                                    "name": "node",
-                                    "plural": false,
+                                    "name": "edges",
+                                    "plural": true,
                                     "selections": [
-                                        (v1 /*: any*/),
-                                        (v2 /*: any*/),
                                         {
                                             "alias": null,
                                             "args": null,
-                                            "concreteType": "CompetitorTypeConnection",
+                                            "concreteType": "MatchType",
                                             "kind": "LinkedField",
-                                            "name": "competitorSet",
+                                            "name": "node",
                                             "plural": false,
                                             "selections": [
+                                                (v2 /*: any*/),
+                                                (v7 /*: any*/),
+                                                (v8 /*: any*/),
                                                 {
                                                     "alias": null,
                                                     "args": null,
-                                                    "concreteType": "CompetitorTypeEdge",
+                                                    "concreteType": "TeamTourneyType",
                                                     "kind": "LinkedField",
-                                                    "name": "edges",
-                                                    "plural": true,
+                                                    "name": "winner",
+                                                    "plural": false,
                                                     "selections": [
-                                                        {
-                                                            "alias": null,
-                                                            "args": null,
-                                                            "concreteType": "CompetitorType",
-                                                            "kind": "LinkedField",
-                                                            "name": "node",
-                                                            "plural": false,
-                                                            "selections": [
-                                                                (v1 /*: any*/)
-                                                            ],
-                                                            "storageKey": null
-                                                        }
+                                                        (v9 /*: any*/)
                                                     ],
+                                                    "storageKey": null
+                                                },
+                                                {
+                                                    "alias": null,
+                                                    "args": null,
+                                                    "concreteType": "TeamTourneyType",
+                                                    "kind": "LinkedField",
+                                                    "name": "team1",
+                                                    "plural": false,
+                                                    "selections": (v12 /*: any*/),
+                                                    "storageKey": null
+                                                },
+                                                {
+                                                    "alias": null,
+                                                    "args": null,
+                                                    "concreteType": "TeamTourneyType",
+                                                    "kind": "LinkedField",
+                                                    "name": "team2",
+                                                    "plural": false,
+                                                    "selections": (v12 /*: any*/),
                                                     "storageKey": null
                                                 }
                                             ],
@@ -197,63 +383,12 @@ const node: ConcreteRequest = (function () {
                                     "storageKey": null
                                 }
                             ],
-                            "storageKey": null
-                        }
-                    ],
-                    "storageKey": null
-                },
-                {
-                    "alias": null,
-                    "args": null,
-                    "concreteType": "MatchTypeConnection",
-                    "kind": "LinkedField",
-                    "name": "matchSet",
-                    "plural": false,
-                    "selections": [
-                        {
-                            "alias": null,
-                            "args": null,
-                            "concreteType": "MatchTypeEdge",
-                            "kind": "LinkedField",
-                            "name": "edges",
-                            "plural": true,
-                            "selections": [
-                                {
-                                    "alias": null,
-                                    "args": null,
-                                    "concreteType": "MatchType",
-                                    "kind": "LinkedField",
-                                    "name": "node",
-                                    "plural": false,
-                                    "selections": [
-                                        (v1 /*: any*/),
-                                        {
-                                            "alias": null,
-                                            "args": null,
-                                            "kind": "ScalarField",
-                                            "name": "round",
-                                            "storageKey": null
-                                        }
-                                    ],
-                                    "storageKey": null
-                                }
-                            ],
-                            "storageKey": null
+                            "storageKey": "matchSet(orderBy:\"round\")"
                         }
                     ],
                     "storageKey": null
                 }
             ],
-            "storageKey": null
-        } as any)
-    ];
-    return {
-        "fragment": {
-            "argumentDefinitions": (v0 /*: any*/),
-            "kind": "Fragment",
-            "metadata": null,
-            "name": "TourneyPageQuery",
-            "selections": (v3 /*: any*/),
             "type": "Query"
         },
         "kind": "Request",
@@ -261,16 +396,101 @@ const node: ConcreteRequest = (function () {
             "argumentDefinitions": (v0 /*: any*/),
             "kind": "Operation",
             "name": "TourneyPageQuery",
-            "selections": (v3 /*: any*/)
+            "selections": [
+                {
+                    "alias": null,
+                    "args": (v1 /*: any*/),
+                    "concreteType": "TourneyType",
+                    "kind": "LinkedField",
+                    "name": "tourney",
+                    "plural": false,
+                    "selections": [
+                        (v2 /*: any*/),
+                        (v3 /*: any*/),
+                        (v4 /*: any*/),
+                        (v5 /*: any*/),
+                        {
+                            "alias": null,
+                            "args": (v6 /*: any*/),
+                            "concreteType": "MatchTypeConnection",
+                            "kind": "LinkedField",
+                            "name": "matchSet",
+                            "plural": false,
+                            "selections": [
+                                {
+                                    "alias": null,
+                                    "args": null,
+                                    "concreteType": "MatchTypeEdge",
+                                    "kind": "LinkedField",
+                                    "name": "edges",
+                                    "plural": true,
+                                    "selections": [
+                                        {
+                                            "alias": null,
+                                            "args": null,
+                                            "concreteType": "MatchType",
+                                            "kind": "LinkedField",
+                                            "name": "node",
+                                            "plural": false,
+                                            "selections": [
+                                                (v2 /*: any*/),
+                                                (v7 /*: any*/),
+                                                (v8 /*: any*/),
+                                                {
+                                                    "alias": null,
+                                                    "args": null,
+                                                    "concreteType": "TeamTourneyType",
+                                                    "kind": "LinkedField",
+                                                    "name": "winner",
+                                                    "plural": false,
+                                                    "selections": [
+                                                        (v13 /*: any*/),
+                                                        (v2 /*: any*/)
+                                                    ],
+                                                    "storageKey": null
+                                                },
+                                                {
+                                                    "alias": null,
+                                                    "args": null,
+                                                    "concreteType": "TeamTourneyType",
+                                                    "kind": "LinkedField",
+                                                    "name": "team1",
+                                                    "plural": false,
+                                                    "selections": (v14 /*: any*/),
+                                                    "storageKey": null
+                                                },
+                                                {
+                                                    "alias": null,
+                                                    "args": null,
+                                                    "concreteType": "TeamTourneyType",
+                                                    "kind": "LinkedField",
+                                                    "name": "team2",
+                                                    "plural": false,
+                                                    "selections": (v14 /*: any*/),
+                                                    "storageKey": null
+                                                }
+                                            ],
+                                            "storageKey": null
+                                        }
+                                    ],
+                                    "storageKey": null
+                                }
+                            ],
+                            "storageKey": "matchSet(orderBy:\"round\")"
+                        }
+                    ],
+                    "storageKey": null
+                }
+            ]
         },
         "params": {
             "id": null,
             "metadata": {},
             "name": "TourneyPageQuery",
             "operationKind": "query",
-            "text": "query TourneyPageQuery(\n  $tourneyId: ID!\n) {\n  tourney(id: $tourneyId) {\n    id\n    name\n    game {\n      id\n      name\n    }\n    teams {\n      edges {\n        node {\n          id\n          name\n          competitorSet {\n            edges {\n              node {\n                id\n              }\n            }\n          }\n        }\n      }\n    }\n    matchSet {\n      edges {\n        node {\n          id\n          round\n        }\n      }\n    }\n  }\n}\n"
+            "text": "query TourneyPageQuery(\n  $tourneyId: ID!\n) {\n  tourney(id: $tourneyId) {\n    id\n    name\n    game {\n      id\n      name\n    }\n    teams {\n      edges {\n        node {\n          id\n          name\n          competitorSet {\n            edges {\n              node {\n                id\n              }\n            }\n          }\n        }\n      }\n    }\n    matchSet(orderBy: \"round\") {\n      edges {\n        node {\n          id\n          round\n          completed\n          winner {\n            team {\n              name\n              id\n            }\n            id\n          }\n          team1 {\n            seed\n            eliminated\n            team {\n              name\n              id\n            }\n            id\n          }\n          team2 {\n            seed\n            eliminated\n            team {\n              name\n              id\n            }\n            id\n          }\n        }\n      }\n    }\n  }\n}\n"
         }
     } as any;
 })();
-(node as any).hash = '0cef42219c2853a7a4fe5a7eeb7b961f';
+(node as any).hash = 'fc97470bded119a006a65752f35e1abe';
 export default node;
