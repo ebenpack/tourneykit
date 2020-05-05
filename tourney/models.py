@@ -58,15 +58,14 @@ class Tourney(DateTimeModel):
         return self.name
 
     def number_of_matches_in_round(self, round):
-        # BASE = 2
-        # number_of_teams = self.teams.count()
-        # bracket_size = math.pow(BASE, math.ceil(math.log(number_of_teams, BASE))) // 2
-        # return int(bracket_size // (2 ** (round - 1)))
+        # With an uneven number of teams in a round, there will by a
+        # placeholder bye match, so we'll round up to accommodate for this
         number_of_teams = self.teams.count()
-        number_of_matches = int(
-            math.ceil(number_of_teams / 2) / math.pow(2, (round - 1))
-        )
-        return number_of_matches
+        def helper(round):
+            if round == 1:
+                return math.ceil(number_of_teams / 2)
+            return math.ceil(helper(round - 1) / 2)
+        return helper(round)
 
     def create_empty_rounds(self, round):
         number_of_matches = self.number_of_matches_in_round(round)
@@ -89,8 +88,10 @@ class Tourney(DateTimeModel):
             return zip_longest(*args, fillvalue=fillvalue)
 
         number_of_matches = self.number_of_matches_in_round(round)
+        # TODO: Fix seeding
         teams = self.teamtourney_set.exclude(eliminated=True).order_by("-seed")
         matches = self.match_set.filter(round=round).order_by("-seed")
+        # TODO: Does this assertion always hold
         assert matches.count() == math.ceil(teams.count() / 2)
         for (match, (team1, team2)) in zip(matches, group(teams, 2)):
             winner = team1 if team2 is None else None
