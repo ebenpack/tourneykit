@@ -1,4 +1,7 @@
-from django.db import models
+import math
+from itertools import zip_longest
+
+from django.db import models, transaction
 from django.contrib.auth.models import User
 
 
@@ -15,7 +18,7 @@ class Competitor(DateTimeModel):
     team = models.ForeignKey("Team", on_delete=models.CASCADE)
 
     class Meta:
-        unique_together = ('user', 'team')
+        unique_together = ("user", "team")
 
     def __str__(self):
         return f"{self.team.name} - {self.user.username}"
@@ -36,7 +39,17 @@ class Game(DateTimeModel):
 
 
 class Tourney(DateTimeModel):
+    SETUP = "S"
+    RUNNING = "R"
+    FINISHED = "F"
+    STATUS_CHOICES = [
+        (SETUP, "Setup"),
+        (RUNNING, "Running"),
+        (FINISHED, "Finished"),
+    ]
     name = models.CharField(max_length=100)
+    current_round = models.IntegerField(default=0)
+    status = models.CharField(choices=STATUS_CHOICES, default=SETUP, max_length=5)
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
     admin = models.ForeignKey(User, on_delete=models.CASCADE)
     teams = models.ManyToManyField(Team, through="TeamTourney")
@@ -44,14 +57,74 @@ class Tourney(DateTimeModel):
     def __str__(self):
         return self.name
 
+    def number_of_matches_in_round(self, round):
+        # BASE = 2
+        # number_of_teams = self.teams.count()
+        # bracket_size = math.pow(BASE, math.ceil(math.log(number_of_teams, BASE))) // 2
+        # return int(bracket_size // (2 ** (round - 1)))
+        number_of_teams = self.teams.count()
+        number_of_matches = int(
+            math.ceil(number_of_teams / 2) / math.pow(2, (round - 1))
+        )
+        return number_of_matches
+
+    def create_empty_rounds(self, round):
+        number_of_matches = self.number_of_matches_in_round(round)
+        if number_of_matches > 0:
+            for seed in range(1, number_of_matches + 1):
+                Match.objects.create(
+                    round=round,
+                    seed=seed,
+                    tourney=self,
+                    team1=None,
+                    team2=None,
+                    winner=None,
+                    completed=False,
+                )
+            self.create_empty_rounds(round + 1)
+
+    def populate_round(self, round):
+        def group(iterable, n, fillvalue=None):
+            args = [iter(iterable)] * n
+            return zip_longest(*args, fillvalue=fillvalue)
+
+        number_of_matches = self.number_of_matches_in_round(round)
+        teams = self.teamtourney_set.exclude(eliminated=True).order_by("-seed")
+        matches = self.match_set.filter(round=round).order_by("-seed")
+        assert matches.count() == math.ceil(teams.count() / 2)
+        for (match, (team1, team2)) in zip(matches, group(teams, 2)):
+            winner = team1 if team2 is None else None
+            completed = False if winner is None else True
+            bye = completed
+            match.team1 = team1
+            match.team2 = team2
+            match.winner = winner
+            match.completed = completed
+            match.save()
+
+    def start_tourney(self):
+        if self.status == self.SETUP:
+            with transaction.atomic():
+                self.create_empty_rounds(1)
+                self.populate_round(1)
+                self.status = self.RUNNING
+                self.save()
+        elif self.status == self.FINISHED:
+            raise Exception("Tournement is already running")
+        elif self.status == self.RUNNING:
+            raise Exception("Tournement has completed")
+        else:
+            raise Exception("Tournement cannot be started")
+
 
 class TeamTourney(DateTimeModel):
     seed = models.IntegerField()
+    eliminated = models.BooleanField(default=False)
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
     tourney = models.ForeignKey(Tourney, on_delete=models.CASCADE)
 
     class Meta:
-        unique_together = ('team', 'tourney')
+        unique_together = ("team", "tourney")
 
     def __str__(self):
         return f"{self.tourney.name} - {self.team.name}"
@@ -59,7 +132,13 @@ class TeamTourney(DateTimeModel):
 
 class Match(DateTimeModel):
     round = models.IntegerField()
+    seed = models.IntegerField()
     tourney = models.ForeignKey(Tourney, on_delete=models.CASCADE)
+    completed = models.BooleanField(default=False)
+    bye = models.BooleanField(default=False)
+    winner = models.ForeignKey(
+        TeamTourney, on_delete=models.CASCADE, related_name="winner", null=True
+    )
     team1 = models.ForeignKey(
         TeamTourney, on_delete=models.CASCADE, related_name="team1", null=True
     )
@@ -68,7 +147,7 @@ class Match(DateTimeModel):
     )
 
     class Meta:
-        unique_together = ('round', 'tourney', 'team1', 'team2')
+        unique_together = ("round", "tourney", "team1", "team2")
 
     def __str__(self):
         return (
