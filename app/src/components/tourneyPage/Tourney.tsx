@@ -10,7 +10,7 @@ const matchDetails = (match, roundWidth: number, roundHeight: number, rectHeight
     const leftOffset = (match.round - 1) * roundWidth;
     const teamOneTopOffset = (match.seed - 1) * roundHeight;
     const teamTwoTopOffset = teamOneTopOffset + rectHeight + (roundHeight * 0.10);
-    const midPoint = teamOneTopOffset + (roundHeight * 0.10);
+    const midPoint = teamOneTopOffset + (roundHeight * 0.50);
     return {leftOffset, teamOneTopOffset, teamTwoTopOffset, midPoint};
 }
 
@@ -47,8 +47,8 @@ const Tourney = ({ tourney }: TourneyPageQueryResponse) => {
                     const color = match.seed % 2 === 0 ? "#ccc" : "white";
                     if (match.round !== 1) {
                         // Not too efficient
-                        const { node: firstPreviousMatch } = previousMatch(match.seed, match.round - 1);
-                        const { node: secondPreviousMatch } = previousMatch(match.seed + 1, match.round - 1);
+                        const { node: firstPreviousMatch } = previousMatch(((match.seed - 1) * 2) + 1, match.round - 1);
+                        const { node: secondPreviousMatch } = previousMatch(((match.seed - 1) * 2) + 2, match.round - 1);
                         const {
                             leftOffset: firstLeftOffset,
                             midPoint: firstMidPoint,
