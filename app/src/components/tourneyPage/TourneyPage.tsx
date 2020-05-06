@@ -44,17 +44,23 @@ const tourneyQuery = graphql`
                         seed
                         completed
                         winner {
-                            team { name }
+                            team {
+                                name
+                            }
                         }
                         team1 {
                             seed
                             eliminated
-                            team { name }
+                            team {
+                                name
+                            }
                         }
                         team2 {
                             seed
                             eliminated
-                            team { name }
+                            team {
+                                name
+                            }
                         }
                     }
                 }
