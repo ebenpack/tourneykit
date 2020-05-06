@@ -62,15 +62,16 @@ class Tourney(DateTimeModel):
         # placeholder bye match, so we'll round up to accommodate for this
         number_of_teams = self.teams.count()
         def helper(round):
-            if round == 1:
+            if round <= 1:
                 return math.ceil(number_of_teams / 2)
             return math.ceil(helper(round - 1) / 2)
         return helper(round)
 
     def create_empty_rounds(self, round):
-        number_of_matches = self.number_of_matches_in_round(round)
-        if number_of_matches > 0:
-            for seed in range(1, number_of_matches + 1):
+        number_of_teams = self.teams.count()
+        while number_of_teams > 1:
+            number_of_matches_in_current_round = math.ceil(number_of_teams / 2)
+            for seed in range(1, number_of_matches_in_current_round + 1):
                 Match.objects.create(
                     round=round,
                     seed=seed,
@@ -80,19 +81,18 @@ class Tourney(DateTimeModel):
                     winner=None,
                     completed=False,
                 )
-            self.create_empty_rounds(round + 1)
+            round += 1
+            number_of_teams = number_of_matches_in_current_round
+
 
     def populate_round(self, round):
         def group(iterable, n, fillvalue=None):
             args = [iter(iterable)] * n
             return zip_longest(*args, fillvalue=fillvalue)
 
-        number_of_matches = self.number_of_matches_in_round(round)
         # TODO: Fix seeding
         teams = self.teamtourney_set.exclude(eliminated=True).order_by("-seed")
         matches = self.match_set.filter(round=round).order_by("-seed")
-        # TODO: Does this assertion always hold
-        assert matches.count() == math.ceil(teams.count() / 2)
         for (match, (team1, team2)) in zip(matches, group(teams, 2)):
             winner = team1 if team2 is None else None
             completed = False if winner is None else True
