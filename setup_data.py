@@ -16,24 +16,26 @@ import psycopg2
 # Wipe out all tourneykit tables
 conn = psycopg2.connect("dbname=tourneykit user=tourneykit")
 cur = conn.cursor()
-cur.execute("""
+cur.execute(
+    """
 select 'drop table if exists "' || tablename || '" cascade;' 
 from pg_tables
 where tableowner = 'tourneykit'; 
-""")
+"""
+)
 for drop in cur.fetchall():
     cur.execute(drop[0], ())
 conn.commit()
 
 # Wipe out any migrations
-migration_dir = './tourney/migrations/'
+migration_dir = "./tourney/migrations/"
 for f in os.listdir(migration_dir):
-    if f != '__init__.py' and os.path.isfile(os.path.join(migration_dir, f)):
-        os.remove(os.path.join(migration_dir,f))
+    if f != "__init__.py" and os.path.isfile(os.path.join(migration_dir, f)):
+        os.remove(os.path.join(migration_dir, f))
 
 # Migrate
-management.call_command('makemigrations', verbosity=0, interactive=False)
-management.call_command('migrate', verbosity=0, interactive=False)
+management.call_command("makemigrations", verbosity=0, interactive=False)
+management.call_command("migrate", verbosity=0, interactive=False)
 
 UserModel = get_user_model()
 

@@ -61,10 +61,12 @@ class Tourney(DateTimeModel):
         # With an uneven number of teams in a round, there will by a
         # placeholder bye match, so we'll round up to accommodate for this
         number_of_teams = self.teams.count()
+
         def helper(round):
             if round <= 1:
                 return math.ceil(number_of_teams / 2)
             return math.ceil(helper(round - 1) / 2)
+
         return helper(round)
 
     def create_empty_rounds(self, round):
@@ -85,7 +87,6 @@ class Tourney(DateTimeModel):
                 )
             round += 1
             round_size = math.floor(round_size / 2)
-
 
     def populate_round(self, round):
         def group(iterable, n, fillvalue=None):
