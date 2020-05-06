@@ -44,6 +44,7 @@ const Tourney = ({ tourney }: TourneyPageQueryResponse) => {
                     const previousMatch = (seed: number, round: number) => tourney.matchSet.edges
                         .find(({ node: match }) => match.seed === seed && match.round === round);
                     let connections = null;
+                    const color = match.seed % 2 === 0 ? "#ccc" : "white";
                     if (match.round !== 1) {
                         // Not too efficient
                         const { node: firstPreviousMatch } = previousMatch(match.seed, match.round - 1);
@@ -87,7 +88,7 @@ const Tourney = ({ tourney }: TourneyPageQueryResponse) => {
                                 width={rectWidth}
                                 height={rectHeight}
                                 stroke="black"
-                                fill="#ccc"
+                                fill={color}
                             />
                             <text
                                 x={leftOffset}
@@ -101,7 +102,7 @@ const Tourney = ({ tourney }: TourneyPageQueryResponse) => {
                                 width={rectWidth}
                                 height={rectHeight}
                                 stroke="black"
-                                fill="#ccc"
+                                fill={color}
                             />
                             <text
                                 x={leftOffset}
