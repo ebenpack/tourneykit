@@ -69,9 +69,11 @@ class Tourney(DateTimeModel):
 
     def create_empty_rounds(self, round):
         number_of_teams = self.teams.count()
-        while number_of_teams > 1:
-            number_of_matches_in_current_round = math.ceil(number_of_teams / 2)
-            for seed in range(1, number_of_matches_in_current_round + 1):
+        # Round up to the nearest power of two.
+        # Empty matches will be automatically completed, but this simplifies the math
+        round_size = int(math.pow(2, math.ceil(math.log2(number_of_teams / 2))))
+        while round_size > 0:
+            for seed in range(1, round_size + 1):
                 Match.objects.create(
                     round=round,
                     seed=seed,
@@ -82,7 +84,7 @@ class Tourney(DateTimeModel):
                     completed=False,
                 )
             round += 1
-            number_of_teams = number_of_matches_in_current_round
+            round_size = math.floor(round_size / 2)
 
 
     def populate_round(self, round):
@@ -93,14 +95,19 @@ class Tourney(DateTimeModel):
         # TODO: Fix seeding
         teams = self.teamtourney_set.exclude(eliminated=True).order_by("-seed")
         matches = self.match_set.filter(round=round).order_by("-seed")
-        for (match, (team1, team2)) in zip(matches, group(teams, 2)):
+        for (match, teams) in zip_longest(matches, group(teams, 2), fillvalue=None):
+            if teams is not None:
+                (team1, team2) = teams
+            else:
+                team1 = None
+                team2 = None
             winner = team1 if team2 is None else None
-            completed = False if winner is None else True
-            bye = completed
-            match.team1 = team1
-            match.team2 = team2
+            completed = True if team1 is None or team2 is None else False
             match.winner = winner
             match.completed = completed
+            match.bye = completed
+            match.team1 = team1
+            match.team2 = team2
             match.save()
 
     def start_tourney(self):
