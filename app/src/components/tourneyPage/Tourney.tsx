@@ -66,7 +66,13 @@ const Matches = ({
                     teamOneTopOffset,
                     teamTwoTopOffset,
                     midPoint,
-                } = matchDetails(match.round, match.seed, roundWidth, roundHeight, rectHeight);
+                } = matchDetails(
+                    match.round,
+                    match.seed,
+                    roundWidth,
+                    roundHeight,
+                    rectHeight
+                );
                 const previousMatch = (seed: number, round: number) =>
                     matches.find(
                         ({ node: match }) =>
@@ -131,10 +137,6 @@ const Matches = ({
                         </React.Fragment>
                     );
                 }
-                const team2ConnectCoords = {
-                    y1: leftOffset,
-                };
-                const team1ConnectCoords = {};
                 return (
                     <React.Fragment key={`${match.round}|${match.seed}`}>
                         <rect

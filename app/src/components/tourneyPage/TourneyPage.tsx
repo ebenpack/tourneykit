@@ -36,7 +36,7 @@ const tourneyQuery = graphql`
                     }
                 }
             }
-            matchSet(orderBy: "round") {
+            matchSet(orderBy: "round,seed") {
                 edges {
                     node {
                         id
