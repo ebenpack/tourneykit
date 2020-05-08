@@ -95,7 +95,7 @@ class Tourney(DateTimeModel):
 
         # TODO: Fix seeding
         teams = self.teamtourney_set.exclude(eliminated=True).order_by("-seed")
-        matches = self.match_set.filter(round=round).order_by("-seed")
+        matches = self.match_set.filter(round=round).order_by("seed")
         for (match, teams) in zip_longest(matches, group(teams, 2), fillvalue=None):
             if teams is not None:
                 (team1, team2) = teams
