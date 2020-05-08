@@ -14,7 +14,7 @@ from tourney.models import Competitor, Team, TeamTourney, Game, Tourney, Match, 
 class MatchFilter(FilterSet):
     class Meta:
         model = Match
-        fields = ("round",)  # TODO
+        fields = ("round", "seed")
 
     order_by = OrderingFilter(fields=("round", "seed",))
 
