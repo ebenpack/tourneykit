@@ -1,302 +1,400 @@
 schema {
-  query: Query
-  mutation: Mutations
+    query: Query
+    mutation: Mutations
 }
 
 type CompetitorType implements Node {
-  id: ID!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  user: UserType!
-  team: TeamType!
+    id: ID!
+    createdAt: DateTime!
+    updatedAt: DateTime!
+    user: UserType!
+    team: TeamType!
 }
 
 type CompetitorTypeConnection {
-  pageInfo: PageInfo!
-  edges: [CompetitorTypeEdge]!
+    pageInfo: PageInfo!
+    edges: [CompetitorTypeEdge]!
 }
 
 type CompetitorTypeEdge {
-  node: CompetitorType
-  cursor: String!
+    node: CompetitorType
+    cursor: String!
 }
 
 type CompetitorsTypeConnection {
-  pageInfo: PageInfo!
-  edges: [CompetitorsTypeEdge]!
+    pageInfo: PageInfo!
+    edges: [CompetitorsTypeEdge]!
 }
 
 type CompetitorsTypeEdge {
-  node: CompetitorType
-  cursor: String!
+    node: CompetitorType
+    cursor: String!
 }
 
 type CreateCompetitor {
-  competitor: CompetitorType
-  ok: Boolean
+    competitor: CompetitorType
+    ok: Boolean
 }
 
 type CreateGame {
-  game: GameType
-  ok: Boolean
+    game: GameType
+    ok: Boolean
 }
 
 type CreateTeam {
-  team: TeamType
-  ok: Boolean
+    team: TeamType
+    ok: Boolean
 }
 
 type CreateTourney {
-  tourney: TourneyType
-  ok: Boolean
+    tourney: TourneyType
+    ok: Boolean
 }
 
 scalar DateTime
 
 type GameType implements Node {
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  id: ID!
-  name: String!
-  tourneySet(before: String, after: String, first: Int, last: Int): TourneyTypeConnection!
+    createdAt: DateTime!
+    updatedAt: DateTime!
+    id: ID!
+    name: String!
+    tourneySet(
+        before: String
+        after: String
+        first: Int
+        last: Int
+    ): TourneyTypeConnection!
 }
 
 type GamesTypeConnection {
-  pageInfo: PageInfo!
-  edges: [GamesTypeEdge]!
+    pageInfo: PageInfo!
+    edges: [GamesTypeEdge]!
 }
 
 type GamesTypeEdge {
-  node: GameType
-  cursor: String!
+    node: GameType
+    cursor: String!
 }
 
 type Login {
-  user: UserType
-  ok: Boolean
+    user: UserType
+    ok: Boolean
 }
 
 type Logout {
-  ok: Boolean
+    ok: Boolean
 }
 
 type MatchType implements Node {
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  id: ID!
-  round: Int!
-  seed: Int!
-  tourney: TourneyType!
-  completed: Boolean!
-  bye: Boolean!
-  winner: TeamTourneyType
-  team1: TeamTourneyType
-  team2: TeamTourneyType
-  setSet(before: String, after: String, first: Int, last: Int): SetTypeConnection!
+    createdAt: DateTime!
+    updatedAt: DateTime!
+    id: ID!
+    round: Int!
+    seed: Int!
+    tourney: TourneyType!
+    completed: Boolean!
+    bye: Boolean!
+    winner: TeamTourneyType
+    team1: TeamTourneyType
+    team2: TeamTourneyType
+    setSet(
+        before: String
+        after: String
+        first: Int
+        last: Int
+    ): SetTypeConnection!
 }
 
 type MatchTypeConnection {
-  pageInfo: PageInfo!
-  edges: [MatchTypeEdge]!
+    pageInfo: PageInfo!
+    edges: [MatchTypeEdge]!
 }
 
 type MatchTypeEdge {
-  node: MatchType
-  cursor: String!
+    node: MatchType
+    cursor: String!
 }
 
 type MatchesTypeConnection {
-  pageInfo: PageInfo!
-  edges: [MatchesTypeEdge]!
+    pageInfo: PageInfo!
+    edges: [MatchesTypeEdge]!
 }
 
 type MatchesTypeEdge {
-  node: MatchType
-  cursor: String!
+    node: MatchType
+    cursor: String!
 }
 
 type Mutations {
-  login(password: String, username: String): Login
-  logout: Logout
-  signUp(email: String, password: String, passwordVerify: String, username: String): SignUp
-  startTourney(tourneyId: ID): StartTourney
-  createGame(name: String): CreateGame
-  createCompetitor(name: String): CreateCompetitor
-  createTeam(name: String): CreateTeam
-  createTourney(name: String): CreateTourney
+    login(password: String, username: String): Login
+    logout: Logout
+    signUp(
+        email: String
+        password: String
+        passwordVerify: String
+        username: String
+    ): SignUp
+    startTourney(tourneyId: ID): StartTourney
+    createGame(name: String): CreateGame
+    createCompetitor(name: String): CreateCompetitor
+    createTeam(name: String): CreateTeam
+    createTourney(name: String): CreateTourney
 }
 
 interface Node {
-  id: ID!
+    id: ID!
 }
 
 type PageInfo {
-  hasNextPage: Boolean!
-  hasPreviousPage: Boolean!
-  startCursor: String
-  endCursor: String
+    hasNextPage: Boolean!
+    hasPreviousPage: Boolean!
+    startCursor: String
+    endCursor: String
 }
 
 type Query {
-  competitors(before: String, after: String, first: Int, last: Int): CompetitorsTypeConnection
-  tourneys(before: String, after: String, first: Int, last: Int): TourneysTypeConnection
-  matches(before: String, after: String, first: Int, last: Int): MatchesTypeConnection
-  sets(before: String, after: String, first: Int, last: Int): SetsTypeConnection
-  teams(before: String, after: String, first: Int, last: Int): TeamsTypeConnection
-  games(before: String, after: String, first: Int, last: Int): GamesTypeConnection
-  competitor(id: ID!): CompetitorType
-  tourney(id: ID!): TourneyType
-  match(id: ID!): MatchType
-  team(id: ID!): TeamType
-  teamTourney(id: ID!): TeamTourneyType
-  game(id: ID!): GameType
-  set(id: ID!): SetType
-  me: UserType
-  users(before: String, after: String, first: Int, last: Int): UsersTypeConnection
+    competitors(
+        before: String
+        after: String
+        first: Int
+        last: Int
+    ): CompetitorsTypeConnection
+    tourneys(
+        before: String
+        after: String
+        first: Int
+        last: Int
+    ): TourneysTypeConnection
+    matches(
+        before: String
+        after: String
+        first: Int
+        last: Int
+    ): MatchesTypeConnection
+    sets(
+        before: String
+        after: String
+        first: Int
+        last: Int
+    ): SetsTypeConnection
+    teams(
+        before: String
+        after: String
+        first: Int
+        last: Int
+    ): TeamsTypeConnection
+    games(
+        before: String
+        after: String
+        first: Int
+        last: Int
+    ): GamesTypeConnection
+    competitor(id: ID!): CompetitorType
+    tourney(id: ID!): TourneyType
+    match(id: ID!): MatchType
+    team(id: ID!): TeamType
+    teamTourney(id: ID!): TeamTourneyType
+    game(id: ID!): GameType
+    set(id: ID!): SetType
+    me: UserType
+    users(
+        before: String
+        after: String
+        first: Int
+        last: Int
+    ): UsersTypeConnection
 }
 
 type SetType implements Node {
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  id: ID!
-  match: MatchType!
-  team1Score: Int!
-  team2Score: Int!
+    createdAt: DateTime!
+    updatedAt: DateTime!
+    id: ID!
+    match: MatchType!
+    team1Score: Int!
+    team2Score: Int!
 }
 
 type SetTypeConnection {
-  pageInfo: PageInfo!
-  edges: [SetTypeEdge]!
+    pageInfo: PageInfo!
+    edges: [SetTypeEdge]!
 }
 
 type SetTypeEdge {
-  node: SetType
-  cursor: String!
+    node: SetType
+    cursor: String!
 }
 
 type SetsTypeConnection {
-  pageInfo: PageInfo!
-  edges: [SetsTypeEdge]!
+    pageInfo: PageInfo!
+    edges: [SetsTypeEdge]!
 }
 
 type SetsTypeEdge {
-  node: SetType
-  cursor: String!
+    node: SetType
+    cursor: String!
 }
 
 type SignUp {
-  ok: Boolean
-  user: UserType
+    ok: Boolean
+    user: UserType
 }
 
 type StartTourney {
-  ok: Boolean
+    ok: Boolean
 }
 
 type TeamTourneyType implements Node {
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  id: ID!
-  seed: Int!
-  eliminated: Boolean!
-  team: TeamType!
-  tourney: TourneyType!
-  winner(before: String, after: String, first: Int, last: Int): MatchTypeConnection!
-  team1(before: String, after: String, first: Int, last: Int): MatchTypeConnection!
-  team2(before: String, after: String, first: Int, last: Int): MatchTypeConnection!
+    createdAt: DateTime!
+    updatedAt: DateTime!
+    id: ID!
+    seed: Int!
+    eliminated: Boolean!
+    team: TeamType!
+    tourney: TourneyType!
+    winner(
+        before: String
+        after: String
+        first: Int
+        last: Int
+    ): MatchTypeConnection!
+    team1(
+        before: String
+        after: String
+        first: Int
+        last: Int
+    ): MatchTypeConnection!
+    team2(
+        before: String
+        after: String
+        first: Int
+        last: Int
+    ): MatchTypeConnection!
 }
 
 type TeamTourneyTypeConnection {
-  pageInfo: PageInfo!
-  edges: [TeamTourneyTypeEdge]!
+    pageInfo: PageInfo!
+    edges: [TeamTourneyTypeEdge]!
 }
 
 type TeamTourneyTypeEdge {
-  node: TeamTourneyType
-  cursor: String!
+    node: TeamTourneyType
+    cursor: String!
 }
 
 type TeamType implements Node {
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  id: ID!
-  name: String!
-  competitorSet(before: String, after: String, first: Int, last: Int): CompetitorTypeConnection!
-  tourneySet(before: String, after: String, first: Int, last: Int): TourneyTypeConnection!
-  teamtourneySet(before: String, after: String, first: Int, last: Int): TeamTourneyTypeConnection!
+    createdAt: DateTime!
+    updatedAt: DateTime!
+    id: ID!
+    name: String!
+    competitorSet(
+        before: String
+        after: String
+        first: Int
+        last: Int
+    ): CompetitorTypeConnection!
+    tourneySet(
+        before: String
+        after: String
+        first: Int
+        last: Int
+    ): TourneyTypeConnection!
+    teamtourneySet(
+        before: String
+        after: String
+        first: Int
+        last: Int
+    ): TeamTourneyTypeConnection!
 }
 
 type TeamTypeConnection {
-  pageInfo: PageInfo!
-  edges: [TeamTypeEdge]!
+    pageInfo: PageInfo!
+    edges: [TeamTypeEdge]!
 }
 
 type TeamTypeEdge {
-  node: TeamType
-  cursor: String!
+    node: TeamType
+    cursor: String!
 }
 
 type TeamsTypeConnection {
-  pageInfo: PageInfo!
-  edges: [TeamsTypeEdge]!
+    pageInfo: PageInfo!
+    edges: [TeamsTypeEdge]!
 }
 
 type TeamsTypeEdge {
-  node: TeamType
-  cursor: String!
+    node: TeamType
+    cursor: String!
 }
 
 enum TourneyStatus {
-  S
-  R
-  F
+    S
+    R
+    F
 }
 
 type TourneyType implements Node {
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  id: ID!
-  name: String!
-  currentRound: Int!
-  status: TourneyStatus!
-  game: GameType!
-  admin: UserType!
-  teams(before: String, after: String, first: Int, last: Int): TeamTypeConnection!
-  teamtourneySet(before: String, after: String, first: Int, last: Int): TeamTourneyTypeConnection!
-  matchSet(before: String, after: String, first: Int, last: Int, round: Int, orderBy: String): MatchTypeConnection
+    createdAt: DateTime!
+    updatedAt: DateTime!
+    id: ID!
+    name: String!
+    currentRound: Int!
+    status: TourneyStatus!
+    game: GameType!
+    admin: UserType!
+    teams(
+        before: String
+        after: String
+        first: Int
+        last: Int
+    ): TeamTypeConnection!
+    teamtourneySet(
+        before: String
+        after: String
+        first: Int
+        last: Int
+    ): TeamTourneyTypeConnection!
+    matchSet(
+        before: String
+        after: String
+        first: Int
+        last: Int
+        round: Int
+        seed: Int
+        orderBy: String
+    ): MatchTypeConnection
 }
 
 type TourneyTypeConnection {
-  pageInfo: PageInfo!
-  edges: [TourneyTypeEdge]!
+    pageInfo: PageInfo!
+    edges: [TourneyTypeEdge]!
 }
 
 type TourneyTypeEdge {
-  node: TourneyType
-  cursor: String!
+    node: TourneyType
+    cursor: String!
 }
 
 type TourneysTypeConnection {
-  pageInfo: PageInfo!
-  edges: [TourneysTypeEdge]!
+    pageInfo: PageInfo!
+    edges: [TourneysTypeEdge]!
 }
 
 type TourneysTypeEdge {
-  node: TourneyType
-  cursor: String!
+    node: TourneyType
+    cursor: String!
 }
 
 type UserType implements Node {
-  id: ID!
-  username: String!
+    id: ID!
+    username: String!
 }
 
 type UsersTypeConnection {
-  pageInfo: PageInfo!
-  edges: [UsersTypeEdge]!
+    pageInfo: PageInfo!
+    edges: [UsersTypeEdge]!
 }
 
 type UsersTypeEdge {
-  node: UserType
-  cursor: String!
+    node: UserType
+    cursor: String!
 }

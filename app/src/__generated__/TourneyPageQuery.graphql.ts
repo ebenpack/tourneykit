@@ -92,7 +92,7 @@ query TourneyPageQuery(
         }
       }
     }
-    matchSet(orderBy: "round") {
+    matchSet(orderBy: "round,seed") {
       edges {
         node {
           id
@@ -241,7 +241,7 @@ const node: ConcreteRequest = (function () {
         ({
             "kind": "Literal",
             "name": "orderBy",
-            "value": "round"
+            "value": "round,seed"
         } as any)
     ], v7 = ({
         "alias": null,
@@ -386,7 +386,7 @@ const node: ConcreteRequest = (function () {
                                     "storageKey": null
                                 }
                             ],
-                            "storageKey": "matchSet(orderBy:\"round\")"
+                            "storageKey": "matchSet(orderBy:\"round,seed\")"
                         }
                     ],
                     "storageKey": null
@@ -480,7 +480,7 @@ const node: ConcreteRequest = (function () {
                                     "storageKey": null
                                 }
                             ],
-                            "storageKey": "matchSet(orderBy:\"round\")"
+                            "storageKey": "matchSet(orderBy:\"round,seed\")"
                         }
                     ],
                     "storageKey": null
@@ -492,9 +492,9 @@ const node: ConcreteRequest = (function () {
             "metadata": {},
             "name": "TourneyPageQuery",
             "operationKind": "query",
-            "text": "query TourneyPageQuery(\n  $tourneyId: ID!\n) {\n  tourney(id: $tourneyId) {\n    id\n    name\n    game {\n      id\n      name\n    }\n    teams {\n      edges {\n        node {\n          id\n          name\n          competitorSet {\n            edges {\n              node {\n                id\n              }\n            }\n          }\n        }\n      }\n    }\n    matchSet(orderBy: \"round\") {\n      edges {\n        node {\n          id\n          round\n          seed\n          completed\n          winner {\n            team {\n              name\n              id\n            }\n            id\n          }\n          team1 {\n            seed\n            eliminated\n            team {\n              name\n              id\n            }\n            id\n          }\n          team2 {\n            seed\n            eliminated\n            team {\n              name\n              id\n            }\n            id\n          }\n        }\n      }\n    }\n  }\n}\n"
+            "text": "query TourneyPageQuery(\n  $tourneyId: ID!\n) {\n  tourney(id: $tourneyId) {\n    id\n    name\n    game {\n      id\n      name\n    }\n    teams {\n      edges {\n        node {\n          id\n          name\n          competitorSet {\n            edges {\n              node {\n                id\n              }\n            }\n          }\n        }\n      }\n    }\n    matchSet(orderBy: \"round,seed\") {\n      edges {\n        node {\n          id\n          round\n          seed\n          completed\n          winner {\n            team {\n              name\n              id\n            }\n            id\n          }\n          team1 {\n            seed\n            eliminated\n            team {\n              name\n              id\n            }\n            id\n          }\n          team2 {\n            seed\n            eliminated\n            team {\n              name\n              id\n            }\n            id\n          }\n        }\n      }\n    }\n  }\n}\n"
         }
     } as any;
 })();
-(node as any).hash = 'e7bb86a02046f4792d6f63303340e04c';
+(node as any).hash = '1c497f04f746d884a68c17166134cac5';
 export default node;
