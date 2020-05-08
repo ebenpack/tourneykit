@@ -34,6 +34,35 @@ interface MatchesProps {
     rectWidth: number;
 }
 
+const findMatch = (
+    matches: MatchesType,
+    { seed, round }: { seed: number; round: number }
+) =>
+    matches.find(
+        ({ node: match }) => match.seed === seed && match.round === round
+    );
+
+const previousMatches = ({ seed, round }: { seed: number; round: number }) => [
+    { seed: seed * 2 - 1, round: round - 1 },
+    { seed: seed * 2, round: round - 1 },
+];
+
+const shouldRender = (matches: MatchesType, match: MatchType): boolean => {
+    if (match.round === 1) {
+        return match.team1 !== null || match.team2 !== null;
+    }
+    return previousMatches(match).some((previousMatchDetails) => {
+        const { node: previousMatch } = findMatch(
+            matches,
+            previousMatchDetails
+        );
+        if (!previousMatch) {
+            return false;
+        }
+        return shouldRender(matches, previousMatch);
+    });
+};
+
 const Matches = ({
     matches,
     roundWidth,
@@ -43,13 +72,6 @@ const Matches = ({
     bracketHeight,
     rectWidth,
 }: MatchesProps) => {
-    let matchesInRound = 0;
-    matches.forEach(({ node: match }) => {
-        // TODO: Throw stuff in a more easily indexable DS... you know... for performance
-        if (match.round === 1) {
-            matchesInRound = Math.max(matchesInRound, match.seed);
-        }
-    });
     return (
         <svg
             version="1.1"
@@ -61,6 +83,9 @@ const Matches = ({
             {matches.map(({ node: match }) => {
                 // TODO: Should probably just use a chart library for all this
                 // TODO: This is just totally broken right now, lol
+                if (!shouldRender(matches, match)) {
+                    return null;
+                }
                 const {
                     leftOffset,
                     teamOneTopOffset,
@@ -73,23 +98,14 @@ const Matches = ({
                     roundHeight,
                     rectHeight
                 );
-                const previousMatch = (seed: number, round: number) =>
-                    matches.find(
-                        ({ node: match }) =>
-                            match.seed === seed && match.round === round
-                    );
                 let connections = null;
                 const color = match.seed % 2 === 0 ? "#ccc" : "white";
-                if (match.round !== 1) {
+                if (match.round !== 1 && shouldRender(matches, match)) {
                     // Not too efficient
-                    const { node: firstPreviousMatch } = previousMatch(
-                        match.seed * 2 - 1,
-                        match.round - 1
-                    );
-                    const { node: secondPreviousMatch } = previousMatch(
-                        match.seed * 2,
-                        match.round - 1
-                    );
+                    const [
+                        { node: firstPreviousMatch },
+                        { node: secondPreviousMatch },
+                    ] = previousMatches(match).map(findMatch.bind(null, matches));
                     const {
                         leftOffset: firstLeftOffset,
                         midPoint: firstMidPoint,
@@ -112,7 +128,7 @@ const Matches = ({
                     );
                     connections = (
                         <React.Fragment>
-                            <path
+                            {shouldRender(matches, firstPreviousMatch) && <path
                                 d={bezierByH(
                                     firstLeftOffset + rectWidth,
                                     firstMidPoint,
@@ -122,8 +138,8 @@ const Matches = ({
                                 strokeWidth="4"
                                 fill="transparent"
                                 stroke="lightgray"
-                            />
-                            <path
+                            />}
+                            {shouldRender(matches, secondPreviousMatch) && <path
                                 d={bezierByH(
                                     secondLeftOffset + rectWidth,
                                     secondMidPoint,
@@ -133,10 +149,11 @@ const Matches = ({
                                 strokeWidth="4"
                                 fill="transparent"
                                 stroke="lightgray"
-                            />
+                            />}
                         </React.Fragment>
                     );
                 }
+                const baseline = "hanging";
                 return (
                     <React.Fragment key={`${match.round}|${match.seed}`}>
                         <rect
@@ -148,8 +165,10 @@ const Matches = ({
                             fill={color}
                         />
                         <text
-                            x={leftOffset}
-                            y={teamOneTopOffset + rectHeight / 2}
+                            x={leftOffset + 2}
+                            y={teamOneTopOffset}
+                            alignmentBaseline={baseline}
+                            dominantBaseline={baseline}
                         >
                             {match.team1?.team?.name}
                         </text>
@@ -162,8 +181,10 @@ const Matches = ({
                             fill={color}
                         />
                         <text
-                            x={leftOffset}
-                            y={teamTwoTopOffset + rectHeight / 2}
+                            x={leftOffset + 2}
+                            y={teamTwoTopOffset}
+                            alignmentBaseline={baseline}
+                            dominantBaseline={baseline}
                         >
                             {match.team2?.team?.name}
                         </text>
