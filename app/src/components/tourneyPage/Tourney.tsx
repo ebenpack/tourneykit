@@ -72,6 +72,55 @@ const Matches = ({
     bracketHeight,
     rectWidth,
 }: MatchesProps) => {
+    // Make a map that will be indexable by round and seed
+    const rounds = new Map();
+    matches.forEach(({ node: match }) => {
+        if (!rounds.has(match.round)) {
+            rounds.set(match.round, new Map());
+        }
+        rounds.get(match.round)?.set(
+            match.seed,
+            new Map([
+                ["match", match],
+                ["nextMatch", null],
+                ["matchDetails", null],
+            ])
+        );
+    });
+    // Calculate match offsets and determine next matches for rendering purposes
+    rounds.forEach((round, roundNum) => {
+        // any... blarg
+        round.forEach((matchMap: any, seedNum: number) => {
+            const match = matchMap.get("match");
+            let nextMatchFound = !rounds.has(roundNum + 1);
+            let nextMatch = null;
+            let nextRound = roundNum + 1;
+            let nextSeed = Math.floor((match.seed + (match.seed % 2)) / 2);
+            while (!nextMatchFound) {
+                nextMatch = rounds.get(nextRound)?.get(nextSeed)?.get("match");
+                if (nextMatch?.bye) {
+                    nextRound += 1;
+                    nextSeed = Math.floor((nextSeed + (nextSeed % 2)) / 2);
+                } else {
+                    nextMatchFound = true;
+                }
+            }
+            matchMap.set(
+                "nextMatch",
+                (nextMatch && [nextMatch.round, nextMatch.seed]) || null
+            );
+            matchMap.set(
+                "matchDetails",
+                matchDetails(
+                    match.round,
+                    match.seed,
+                    roundWidth,
+                    roundHeight,
+                    rectHeight
+                )
+            );
+        });
+    });
     return (
         <svg
             version="1.1"
@@ -80,118 +129,76 @@ const Matches = ({
             height={bracketHeight}
             xmlns="http://www.w3.org/2000/svg"
         >
-            {matches.map(({ node: match }) => {
-                // TODO: Should probably just use a chart library for all this
-                // TODO: This is just totally broken right now, lol
-                if (!shouldRender(matches, match)) {
-                    return null;
-                }
-                const {
-                    leftOffset,
-                    teamOneTopOffset,
-                    teamTwoTopOffset,
-                    midPoint,
-                } = matchDetails(
-                    match.round,
-                    match.seed,
-                    roundWidth,
-                    roundHeight,
-                    rectHeight
-                );
-                let connections = null;
-                const color = match.seed % 2 === 0 ? "#ccc" : "white";
-                if (match.round !== 1 && shouldRender(matches, match)) {
-                    // Not too efficient
-                    const [
-                        { node: firstPreviousMatch },
-                        { node: secondPreviousMatch },
-                    ] = previousMatches(match).map(findMatch.bind(null, matches));
-                    const {
-                        leftOffset: firstLeftOffset,
-                        midPoint: firstMidPoint,
-                    } = matchDetails(
-                        firstPreviousMatch.round,
-                        firstPreviousMatch.seed,
-                        roundWidth,
-                        roundHeight,
-                        rectHeight
-                    );
-                    const {
-                        leftOffset: secondLeftOffset,
-                        midPoint: secondMidPoint,
-                    } = matchDetails(
-                        secondPreviousMatch.round,
-                        secondPreviousMatch.seed,
-                        roundWidth,
-                        roundHeight,
-                        rectHeight
-                    );
-                    connections = (
-                        <React.Fragment>
-                            {shouldRender(matches, firstPreviousMatch) && <path
+            {Array.from(rounds.entries()).flatMap(([roundNum, round]) =>
+                Array.from(round.entries()).map(([seedNum, matchMap]) => {
+                    const baseline = "hanging";
+                    const match = matchMap.get("match");
+                    const nextMatchCoords = matchMap.get("nextMatch");
+                    const matchDetails = matchMap.get("matchDetails");
+                    let connector = null;
+                    const color = match.seed % 2 === 0 ? "#ccc" : "white";
+                    if (match.bye) {
+                        return null;
+                    }
+                    if (nextMatchCoords) {
+                        const [nextRound, nextSeed] = nextMatchCoords;
+                        const nextMatchDetails = rounds
+                            .get(nextRound)
+                            .get(nextSeed)
+                            .get("matchDetails");
+                        connector = (
+                            <path
                                 d={bezierByH(
-                                    firstLeftOffset + rectWidth,
-                                    firstMidPoint,
-                                    leftOffset,
-                                    midPoint
+                                    nextMatchDetails.leftOffset,
+                                    nextMatchDetails.midPoint,
+                                    matchDetails.leftOffset + rectWidth,
+                                    matchDetails.midPoint
                                 )}
                                 strokeWidth="4"
                                 fill="transparent"
                                 stroke="lightgray"
-                            />}
-                            {shouldRender(matches, secondPreviousMatch) && <path
-                                d={bezierByH(
-                                    secondLeftOffset + rectWidth,
-                                    secondMidPoint,
-                                    leftOffset,
-                                    midPoint
-                                )}
-                                strokeWidth="4"
-                                fill="transparent"
-                                stroke="lightgray"
-                            />}
+                            />
+                        );
+                    }
+                    return (
+                        <React.Fragment key={`${match.round}|${match.seed}`}>
+                            <rect
+                                x={matchDetails.leftOffset}
+                                y={matchDetails.teamOneTopOffset}
+                                width={rectWidth}
+                                height={rectHeight}
+                                stroke="black"
+                                fill={color}
+                            />
+                            <text
+                                x={matchDetails.leftOffset + 2}
+                                y={matchDetails.teamOneTopOffset}
+                                alignmentBaseline={baseline}
+                                dominantBaseline={baseline}
+                            >
+                                {match.team1?.team?.name}
+                            </text>
+                            <rect
+                                x={matchDetails.leftOffset}
+                                y={matchDetails.teamTwoTopOffset}
+                                width={rectWidth}
+                                height={rectHeight}
+                                stroke="black"
+                                fill={color}
+                            />
+                            <text
+                                x={matchDetails.leftOffset + 2}
+                                y={matchDetails.teamTwoTopOffset}
+                                alignmentBaseline={baseline}
+                                dominantBaseline={baseline}
+                            >
+                                {match.team2?.team?.name}
+                            </text>
+                            {connector}
                         </React.Fragment>
                     );
-                }
-                const baseline = "hanging";
-                return (
-                    <React.Fragment key={`${match.round}|${match.seed}`}>
-                        <rect
-                            x={leftOffset}
-                            y={teamOneTopOffset}
-                            width={rectWidth}
-                            height={rectHeight}
-                            stroke="black"
-                            fill={color}
-                        />
-                        <text
-                            x={leftOffset + 2}
-                            y={teamOneTopOffset}
-                            alignmentBaseline={baseline}
-                            dominantBaseline={baseline}
-                        >
-                            {match.team1?.team?.name}
-                        </text>
-                        <rect
-                            x={leftOffset}
-                            y={teamTwoTopOffset}
-                            width={rectWidth}
-                            height={rectHeight}
-                            stroke="black"
-                            fill={color}
-                        />
-                        <text
-                            x={leftOffset + 2}
-                            y={teamTwoTopOffset}
-                            alignmentBaseline={baseline}
-                            dominantBaseline={baseline}
-                        >
-                            {match.team2?.team?.name}
-                        </text>
-                        {match.round !== 0 && connections}
-                    </React.Fragment>
-                );
-            })}
+                })
+            )}
         </svg>
     );
 };
