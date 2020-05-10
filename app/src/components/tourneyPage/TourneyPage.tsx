@@ -43,6 +43,7 @@ const tourneyQuery = graphql`
                         round
                         seed
                         completed
+                        bye
                         winner {
                             team {
                                 name
