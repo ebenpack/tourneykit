@@ -13,14 +13,15 @@ const bezierByH = (x0: number, y0: number, x1: number, y1: number): string => {
 const matchDetails = (
     round: number,
     seed: number,
+    roundTopOffset: number,
     roundWidth: number,
     roundHeight: number,
     rectHeight: number
 ) => {
     const leftOffset = (round - 1) * roundWidth;
-    const teamOneTopOffset = (seed - 1) * roundHeight;
-    const teamTwoTopOffset = teamOneTopOffset + rectHeight + roundHeight * 0.1;
-    const midPoint = teamOneTopOffset + roundHeight * 0.5;
+    const teamOneTopOffset = ((seed - 1) * roundHeight) + roundTopOffset;
+    const teamTwoTopOffset = (teamOneTopOffset + rectHeight + roundHeight * 0.1);
+    const midPoint = (teamOneTopOffset + roundHeight * 0.5);
     return { leftOffset, teamOneTopOffset, teamTwoTopOffset, midPoint };
 };
 
@@ -60,6 +61,7 @@ const Matches = ({
     });
     // Calculate match offsets and determine next matches for rendering purposes
     rounds.forEach((round, roundNum) => {
+        const roundTopOffset = ((rounds.get(1).size - round.size) * roundHeight) / 2;
         // any... blarg
         round.forEach((matchMap: any, seedNum: number) => {
             const match = matchMap.get("match");
@@ -85,6 +87,7 @@ const Matches = ({
                 matchDetails(
                     match.round,
                     match.seed,
+                    roundTopOffset,
                     roundWidth,
                     roundHeight,
                     rectHeight
@@ -108,7 +111,7 @@ const Matches = ({
                     const matchDetails = matchMap.get("matchDetails");
                     let connector = null;
                     const color = match.seed % 2 === 0 ? "#ccc" : "white";
-                    if (match.bye) {
+                    if (match.bye && match.round !== 1) {
                         return null;
                     }
                     if (nextMatchCoords) {
