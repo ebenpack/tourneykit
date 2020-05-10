@@ -7,6 +7,7 @@
         "moduleResolution": "node",
         "target": "es2015",
         "jsx": "react",
-        "allowSyntheticDefaultImports": true
+        "allowSyntheticDefaultImports": true,
+        "lib": ["es2019"]
     }
 }
