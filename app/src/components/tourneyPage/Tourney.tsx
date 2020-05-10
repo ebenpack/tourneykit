@@ -34,35 +34,6 @@ interface MatchesProps {
     rectWidth: number;
 }
 
-const findMatch = (
-    matches: MatchesType,
-    { seed, round }: { seed: number; round: number }
-) =>
-    matches.find(
-        ({ node: match }) => match.seed === seed && match.round === round
-    );
-
-const previousMatches = ({ seed, round }: { seed: number; round: number }) => [
-    { seed: seed * 2 - 1, round: round - 1 },
-    { seed: seed * 2, round: round - 1 },
-];
-
-const shouldRender = (matches: MatchesType, match: MatchType): boolean => {
-    if (match.round === 1) {
-        return match.team1 !== null || match.team2 !== null;
-    }
-    return previousMatches(match).some((previousMatchDetails) => {
-        const { node: previousMatch } = findMatch(
-            matches,
-            previousMatchDetails
-        );
-        if (!previousMatch) {
-            return false;
-        }
-        return shouldRender(matches, previousMatch);
-    });
-};
-
 const Matches = ({
     matches,
     roundWidth,
