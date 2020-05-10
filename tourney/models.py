@@ -57,51 +57,50 @@ class Tourney(DateTimeModel):
     def __str__(self):
         return self.name
 
-    def number_of_matches_in_round(self, round):
-        # With an uneven number of teams in a round, there will by a
-        # placeholder bye match, so we'll round up to accommodate for this
-        number_of_teams = self.teams.count()
-
-        def helper(round):
-            if round <= 1:
-                return math.ceil(number_of_teams / 2)
-            return math.ceil(helper(round - 1) / 2)
-
-        return helper(round)
-
-    def create_empty_rounds(self, round):
-        number_of_teams = self.teams.count()
-        # Round up to the nearest power of two.
-        # Empty matches will be automatically completed, but this simplifies the math
-        round_size = int(math.pow(2, math.ceil(math.log2(number_of_teams / 2))))
-        while round_size > 0:
-            for seed in range(1, round_size + 1):
-                Match.objects.create(
-                    round=round,
-                    seed=seed,
-                    tourney=self,
-                    team1=None,
-                    team2=None,
-                    winner=None,
-                    completed=False,
-                )
-            round += 1
-            round_size = math.floor(round_size / 2)
-
-    def populate_round(self, round):
+    def initialize_matches(self):
         def group(iterable, n, fillvalue=None):
             args = [iter(iterable)] * n
             return zip_longest(*args, fillvalue=fillvalue)
 
-        # TODO: Fix seeding
-        teams = self.teamtourney_set.exclude(eliminated=True).order_by("-seed")
-        matches = self.match_set.filter(round=round).order_by("seed")
-        for (match, teams) in zip_longest(matches, group(teams, 2), fillvalue=None):
+        teams = self.teamtourney_set.all()
+        number_of_teams = teams.count()
+        # Round up to the nearest power of two.
+        # Empty matches will be automatically completed, but this simplifies the math
+        round_size = int(math.pow(2, math.ceil(math.log2(number_of_teams / 2))))
+        matches = []
+        # Rounds and seeds will be zero-based to make list indexing more straightforward.
+        # They will be incremented prior ro saving, however
+        round = 0
+        # Stub out an entire bracket
+        while round_size > 0:
+            matches.append([])
+            for seed in range(0, round_size):
+                matches[round].append(
+                    Match(
+                        round=round,
+                        seed=seed,
+                        tourney=self,
+                        team1=None,
+                        team2=None,
+                        winner=None,
+                        completed=False,
+                    )
+                )
+            round += 1
+            round_size = math.floor(round_size / 2)
+
+        # Populate the first round
+        round_one_matches = matches[0]
+        for (match, teams) in zip_longest(
+            round_one_matches, group(teams, 2), fillvalue=None
+        ):
             if teams is not None:
                 (team1, team2) = teams
+                match.exclude = False
             else:
-                team1 = None
-                team2 = None
+                # Mark matches with no competitors for later removal
+                match.exclude = True
+                continue
             winner = team1 if team2 is None else None
             completed = True if team1 is None or team2 is None else False
             match.winner = winner
@@ -109,13 +108,32 @@ class Tourney(DateTimeModel):
             match.bye = completed
             match.team1 = team1
             match.team2 = team2
-            match.save()
+
+        # Allow empty matches from the first round to percolate through the rest of the bracket
+        for round in matches:
+            for match in round:
+                if match.round != 0:
+                    previous_match_one = matches[match.round - 1][match.seed * 2]
+                    previous_match_two = matches[match.round - 1][(match.seed * 2) + 1]
+
+                    match.exclude = False
+                    if previous_match_two.exclude is True:
+                        if previous_match_one.exclude is True:
+                            match.exclude = True
+                        else:
+                            match.bye = True
+                    if match.seed % 2 == 1 and match.exclude:
+                        matches[match.round][match.seed - 1].bye = True
+
+                match.round += 1
+                match.seed += 1
+                if not match.exclude:
+                    match.save()
 
     def start_tourney(self):
         if self.status == self.SETUP:
             with transaction.atomic():
-                self.create_empty_rounds(1)
-                self.populate_round(1)
+                self.initialize_matches()
                 self.status = self.RUNNING
                 self.save()
         elif self.status == self.FINISHED:
