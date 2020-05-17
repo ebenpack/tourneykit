@@ -18,7 +18,7 @@ const matchDetails = (
     const leftOffset = (round - 1) * roundWidth;
     const teamOneTopOffset = (seed - 1) * roundHeight + roundTopOffset;
     const teamTwoTopOffset = teamOneTopOffset + rectHeight + roundHeight * 0.1;
-    const midPoint = teamOneTopOffset + roundHeight * 0.5;
+    const midPoint = (teamOneTopOffset + roundHeight * 0.5) - ((roundHeight * 0.1) / 2);
     return { leftOffset, teamOneTopOffset, teamTwoTopOffset, midPoint };
 };
 
