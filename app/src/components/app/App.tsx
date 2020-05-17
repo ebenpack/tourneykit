@@ -23,6 +23,7 @@ import {
 } from "../../__generated__/AppQuery.graphql";
 
 import { ErrorType, ErrorMessage } from "../../relay/errorType";
+import {User} from "../../types/User";
 
 // TODO: CLEAN UP!
 
@@ -68,12 +69,13 @@ const appQuery = graphql`
     query AppQuery {
         me {
             username
+            id
         }
     }
 `;
 
 interface RenderAppProps {
-    logIn: (username: string) => void;
+    logIn: (user: User) => void;
     error: Error;
     props: AppQueryResponse;
 }
@@ -83,7 +85,7 @@ const RenderApp = ({ error, props, logIn }: RenderAppProps) => {
         return <div>{error.message}</div>;
     } else if (props) {
         if (props.me) {
-            logIn(props.me.username);
+            logIn(props.me);
         }
         return <App />;
     }

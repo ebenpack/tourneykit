@@ -11,6 +11,7 @@ import Field from "../form/Field";
 import { RootState } from "../app/appStore";
 
 import { LoginPageMutationResponse } from "../../__generated__/LoginPageMutation.graphql";
+import {User} from "../../types/User";
 
 const { useState, useEffect } = React;
 
@@ -20,6 +21,7 @@ const mutation = graphql`
             ok
             user {
                 username
+                id
             }
         }
     }
@@ -29,7 +31,7 @@ function commit(
     username: string,
     password: string,
     setLoginError: (error: boolean) => void,
-    logIn: (username: string) => void
+    logIn: (user: User) => void
 ) {
     return commitMutation(relayEnvironment, {
         mutation,
@@ -38,7 +40,7 @@ function commit(
             if (!response.login.ok) {
                 setLoginError(true);
             } else {
-                logIn(username);
+                logIn(response.login.user);
             }
         },
     });
@@ -46,7 +48,7 @@ function commit(
 
 interface LoginPageProps {
     loggedIn: boolean;
-    logIn: (username: string) => void;
+    logIn: (user: User) => void;
 }
 
 const LoginPage = ({ logIn, loggedIn }: LoginPageProps) => {

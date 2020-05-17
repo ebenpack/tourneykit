@@ -6,6 +6,7 @@ export type AppQueryVariables = {};
 export type AppQueryResponse = {
     readonly me: {
         readonly username: string;
+        readonly id: string;
     } | null;
 };
 export type AppQuery = {
@@ -25,33 +26,40 @@ query AppQuery {
 */
 
 const node: ConcreteRequest = (function () {
-    var v0 = ({
-        "alias": null,
-        "args": null,
-        "kind": "ScalarField",
-        "name": "username",
-        "storageKey": null
-    } as any);
+    var v0 = [
+        ({
+            "alias": null,
+            "args": null,
+            "concreteType": "UserType",
+            "kind": "LinkedField",
+            "name": "me",
+            "plural": false,
+            "selections": [
+                {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "username",
+                    "storageKey": null
+                },
+                {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "id",
+                    "storageKey": null
+                }
+            ],
+            "storageKey": null
+        } as any)
+    ];
     return {
         "fragment": {
             "argumentDefinitions": [],
             "kind": "Fragment",
             "metadata": null,
             "name": "AppQuery",
-            "selections": [
-                {
-                    "alias": null,
-                    "args": null,
-                    "concreteType": "UserType",
-                    "kind": "LinkedField",
-                    "name": "me",
-                    "plural": false,
-                    "selections": [
-                        (v0 /*: any*/)
-                    ],
-                    "storageKey": null
-                }
-            ],
+            "selections": (v0 /*: any*/),
             "type": "Query"
         },
         "kind": "Request",
@@ -59,27 +67,7 @@ const node: ConcreteRequest = (function () {
             "argumentDefinitions": [],
             "kind": "Operation",
             "name": "AppQuery",
-            "selections": [
-                {
-                    "alias": null,
-                    "args": null,
-                    "concreteType": "UserType",
-                    "kind": "LinkedField",
-                    "name": "me",
-                    "plural": false,
-                    "selections": [
-                        (v0 /*: any*/),
-                        {
-                            "alias": null,
-                            "args": null,
-                            "kind": "ScalarField",
-                            "name": "id",
-                            "storageKey": null
-                        }
-                    ],
-                    "storageKey": null
-                }
-            ]
+            "selections": (v0 /*: any*/)
         },
         "params": {
             "id": null,
@@ -90,5 +78,5 @@ const node: ConcreteRequest = (function () {
         }
     } as any;
 })();
-(node as any).hash = '17210bf17dd5d9526632efbd131b4a83';
+(node as any).hash = '1667fb7fb472ec41c58927508ce4e971';
 export default node;

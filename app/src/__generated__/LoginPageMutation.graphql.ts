@@ -11,6 +11,7 @@ export type LoginPageMutationResponse = {
         readonly ok: boolean | null;
         readonly user: {
             readonly username: string;
+            readonly id: string;
         } | null;
     } | null;
 };
@@ -52,60 +53,67 @@ const node: ConcreteRequest = (function () {
         } as any)
     ], v1 = [
         ({
-            "kind": "Variable",
-            "name": "password",
-            "variableName": "password"
-        } as any),
-        ({
-            "kind": "Variable",
-            "name": "username",
-            "variableName": "username"
-        } as any)
-    ], v2 = ({
-        "alias": null,
-        "args": null,
-        "kind": "ScalarField",
-        "name": "ok",
-        "storageKey": null
-    } as any), v3 = ({
-        "alias": null,
-        "args": null,
-        "kind": "ScalarField",
-        "name": "username",
-        "storageKey": null
-    } as any);
-    return {
-        "fragment": {
-            "argumentDefinitions": (v0 /*: any*/),
-            "kind": "Fragment",
-            "metadata": null,
-            "name": "LoginPageMutation",
+            "alias": null,
+            "args": [
+                {
+                    "kind": "Variable",
+                    "name": "password",
+                    "variableName": "password"
+                },
+                {
+                    "kind": "Variable",
+                    "name": "username",
+                    "variableName": "username"
+                }
+            ],
+            "concreteType": "Login",
+            "kind": "LinkedField",
+            "name": "login",
+            "plural": false,
             "selections": [
                 {
                     "alias": null,
-                    "args": (v1 /*: any*/),
-                    "concreteType": "Login",
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "ok",
+                    "storageKey": null
+                },
+                {
+                    "alias": null,
+                    "args": null,
+                    "concreteType": "UserType",
                     "kind": "LinkedField",
-                    "name": "login",
+                    "name": "user",
                     "plural": false,
                     "selections": [
-                        (v2 /*: any*/),
                         {
                             "alias": null,
                             "args": null,
-                            "concreteType": "UserType",
-                            "kind": "LinkedField",
-                            "name": "user",
-                            "plural": false,
-                            "selections": [
-                                (v3 /*: any*/)
-                            ],
+                            "kind": "ScalarField",
+                            "name": "username",
+                            "storageKey": null
+                        },
+                        {
+                            "alias": null,
+                            "args": null,
+                            "kind": "ScalarField",
+                            "name": "id",
                             "storageKey": null
                         }
                     ],
                     "storageKey": null
                 }
             ],
+            "storageKey": null
+        } as any)
+    ];
+    return {
+        "fragment": {
+            "argumentDefinitions": (v0 /*: any*/),
+            "kind": "Fragment",
+            "metadata": null,
+            "name": "LoginPageMutation",
+            "selections": (v1 /*: any*/),
             "type": "Mutations"
         },
         "kind": "Request",
@@ -113,39 +121,7 @@ const node: ConcreteRequest = (function () {
             "argumentDefinitions": (v0 /*: any*/),
             "kind": "Operation",
             "name": "LoginPageMutation",
-            "selections": [
-                {
-                    "alias": null,
-                    "args": (v1 /*: any*/),
-                    "concreteType": "Login",
-                    "kind": "LinkedField",
-                    "name": "login",
-                    "plural": false,
-                    "selections": [
-                        (v2 /*: any*/),
-                        {
-                            "alias": null,
-                            "args": null,
-                            "concreteType": "UserType",
-                            "kind": "LinkedField",
-                            "name": "user",
-                            "plural": false,
-                            "selections": [
-                                (v3 /*: any*/),
-                                {
-                                    "alias": null,
-                                    "args": null,
-                                    "kind": "ScalarField",
-                                    "name": "id",
-                                    "storageKey": null
-                                }
-                            ],
-                            "storageKey": null
-                        }
-                    ],
-                    "storageKey": null
-                }
-            ]
+            "selections": (v1 /*: any*/)
         },
         "params": {
             "id": null,
@@ -156,5 +132,5 @@ const node: ConcreteRequest = (function () {
         }
     } as any;
 })();
-(node as any).hash = '80be3f9ffdcc04d87bbdecf80b8ac0d6';
+(node as any).hash = '3a5e64e99223f375ee1d0a8107da0660';
 export default node;

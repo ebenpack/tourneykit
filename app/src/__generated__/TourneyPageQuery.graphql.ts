@@ -9,6 +9,9 @@ export type TourneyPageQueryResponse = {
     readonly tourney: {
         readonly id: string;
         readonly name: string;
+        readonly admin: {
+            readonly id: string;
+        };
         readonly game: {
             readonly id: string;
             readonly name: string;
@@ -74,6 +77,9 @@ query TourneyPageQuery(
   tourney(id: $tourneyId) {
     id
     name
+    admin {
+      id
+    }
     game {
       id
       name
@@ -159,7 +165,18 @@ const node: ConcreteRequest = (function () {
         "kind": "ScalarField",
         "name": "name",
         "storageKey": null
-    } as any), v4 = ({
+    } as any), v4 = [
+        (v2 /*: any*/)
+    ], v5 = ({
+        "alias": null,
+        "args": null,
+        "concreteType": "UserType",
+        "kind": "LinkedField",
+        "name": "admin",
+        "plural": false,
+        "selections": (v4 /*: any*/),
+        "storageKey": null
+    } as any), v6 = ({
         "alias": null,
         "args": null,
         "concreteType": "GameType",
@@ -171,7 +188,7 @@ const node: ConcreteRequest = (function () {
             (v3 /*: any*/)
         ],
         "storageKey": null
-    } as any), v5 = ({
+    } as any), v7 = ({
         "alias": null,
         "args": null,
         "concreteType": "TeamTypeConnection",
@@ -220,9 +237,7 @@ const node: ConcreteRequest = (function () {
                                                 "kind": "LinkedField",
                                                 "name": "node",
                                                 "plural": false,
-                                                "selections": [
-                                                    (v2 /*: any*/)
-                                                ],
+                                                "selections": (v4 /*: any*/),
                                                 "storageKey": null
                                             }
                                         ],
@@ -239,37 +254,37 @@ const node: ConcreteRequest = (function () {
             }
         ],
         "storageKey": null
-    } as any), v6 = [
+    } as any), v8 = [
         ({
             "kind": "Literal",
             "name": "orderBy",
             "value": "round,seed"
         } as any)
-    ], v7 = ({
+    ], v9 = ({
         "alias": null,
         "args": null,
         "kind": "ScalarField",
         "name": "round",
         "storageKey": null
-    } as any), v8 = ({
+    } as any), v10 = ({
         "alias": null,
         "args": null,
         "kind": "ScalarField",
         "name": "seed",
         "storageKey": null
-    } as any), v9 = ({
+    } as any), v11 = ({
         "alias": null,
         "args": null,
         "kind": "ScalarField",
         "name": "completed",
         "storageKey": null
-    } as any), v10 = ({
+    } as any), v12 = ({
         "alias": null,
         "args": null,
         "kind": "ScalarField",
         "name": "bye",
         "storageKey": null
-    } as any), v11 = ({
+    } as any), v13 = ({
         "alias": null,
         "args": null,
         "concreteType": "TeamType",
@@ -280,17 +295,17 @@ const node: ConcreteRequest = (function () {
             (v3 /*: any*/)
         ],
         "storageKey": null
-    } as any), v12 = ({
+    } as any), v14 = ({
         "alias": null,
         "args": null,
         "kind": "ScalarField",
         "name": "eliminated",
         "storageKey": null
-    } as any), v13 = [
-        (v8 /*: any*/),
-        (v12 /*: any*/),
-        (v11 /*: any*/)
-    ], v14 = ({
+    } as any), v15 = [
+        (v10 /*: any*/),
+        (v14 /*: any*/),
+        (v13 /*: any*/)
+    ], v16 = ({
         "alias": null,
         "args": null,
         "concreteType": "TeamType",
@@ -302,10 +317,10 @@ const node: ConcreteRequest = (function () {
             (v2 /*: any*/)
         ],
         "storageKey": null
-    } as any), v15 = [
-        (v8 /*: any*/),
-        (v12 /*: any*/),
+    } as any), v17 = [
+        (v10 /*: any*/),
         (v14 /*: any*/),
+        (v16 /*: any*/),
         (v2 /*: any*/)
     ];
     return {
@@ -325,11 +340,12 @@ const node: ConcreteRequest = (function () {
                     "selections": [
                         (v2 /*: any*/),
                         (v3 /*: any*/),
-                        (v4 /*: any*/),
                         (v5 /*: any*/),
+                        (v6 /*: any*/),
+                        (v7 /*: any*/),
                         {
                             "alias": null,
-                            "args": (v6 /*: any*/),
+                            "args": (v8 /*: any*/),
                             "concreteType": "MatchTypeConnection",
                             "kind": "LinkedField",
                             "name": "matchSet",
@@ -352,10 +368,10 @@ const node: ConcreteRequest = (function () {
                                             "plural": false,
                                             "selections": [
                                                 (v2 /*: any*/),
-                                                (v7 /*: any*/),
-                                                (v8 /*: any*/),
                                                 (v9 /*: any*/),
                                                 (v10 /*: any*/),
+                                                (v11 /*: any*/),
+                                                (v12 /*: any*/),
                                                 {
                                                     "alias": null,
                                                     "args": null,
@@ -364,7 +380,7 @@ const node: ConcreteRequest = (function () {
                                                     "name": "winner",
                                                     "plural": false,
                                                     "selections": [
-                                                        (v11 /*: any*/)
+                                                        (v13 /*: any*/)
                                                     ],
                                                     "storageKey": null
                                                 },
@@ -375,7 +391,7 @@ const node: ConcreteRequest = (function () {
                                                     "kind": "LinkedField",
                                                     "name": "team1",
                                                     "plural": false,
-                                                    "selections": (v13 /*: any*/),
+                                                    "selections": (v15 /*: any*/),
                                                     "storageKey": null
                                                 },
                                                 {
@@ -385,7 +401,7 @@ const node: ConcreteRequest = (function () {
                                                     "kind": "LinkedField",
                                                     "name": "team2",
                                                     "plural": false,
-                                                    "selections": (v13 /*: any*/),
+                                                    "selections": (v15 /*: any*/),
                                                     "storageKey": null
                                                 }
                                             ],
@@ -419,11 +435,12 @@ const node: ConcreteRequest = (function () {
                     "selections": [
                         (v2 /*: any*/),
                         (v3 /*: any*/),
-                        (v4 /*: any*/),
                         (v5 /*: any*/),
+                        (v6 /*: any*/),
+                        (v7 /*: any*/),
                         {
                             "alias": null,
-                            "args": (v6 /*: any*/),
+                            "args": (v8 /*: any*/),
                             "concreteType": "MatchTypeConnection",
                             "kind": "LinkedField",
                             "name": "matchSet",
@@ -446,10 +463,10 @@ const node: ConcreteRequest = (function () {
                                             "plural": false,
                                             "selections": [
                                                 (v2 /*: any*/),
-                                                (v7 /*: any*/),
-                                                (v8 /*: any*/),
                                                 (v9 /*: any*/),
                                                 (v10 /*: any*/),
+                                                (v11 /*: any*/),
+                                                (v12 /*: any*/),
                                                 {
                                                     "alias": null,
                                                     "args": null,
@@ -458,7 +475,7 @@ const node: ConcreteRequest = (function () {
                                                     "name": "winner",
                                                     "plural": false,
                                                     "selections": [
-                                                        (v14 /*: any*/),
+                                                        (v16 /*: any*/),
                                                         (v2 /*: any*/)
                                                     ],
                                                     "storageKey": null
@@ -470,7 +487,7 @@ const node: ConcreteRequest = (function () {
                                                     "kind": "LinkedField",
                                                     "name": "team1",
                                                     "plural": false,
-                                                    "selections": (v15 /*: any*/),
+                                                    "selections": (v17 /*: any*/),
                                                     "storageKey": null
                                                 },
                                                 {
@@ -480,7 +497,7 @@ const node: ConcreteRequest = (function () {
                                                     "kind": "LinkedField",
                                                     "name": "team2",
                                                     "plural": false,
-                                                    "selections": (v15 /*: any*/),
+                                                    "selections": (v17 /*: any*/),
                                                     "storageKey": null
                                                 }
                                             ],
@@ -502,9 +519,9 @@ const node: ConcreteRequest = (function () {
             "metadata": {},
             "name": "TourneyPageQuery",
             "operationKind": "query",
-            "text": "query TourneyPageQuery(\n  $tourneyId: ID!\n) {\n  tourney(id: $tourneyId) {\n    id\n    name\n    game {\n      id\n      name\n    }\n    teams {\n      edges {\n        node {\n          id\n          name\n          competitorSet {\n            edges {\n              node {\n                id\n              }\n            }\n          }\n        }\n      }\n    }\n    matchSet(orderBy: \"round,seed\") {\n      edges {\n        node {\n          id\n          round\n          seed\n          completed\n          bye\n          winner {\n            team {\n              name\n              id\n            }\n            id\n          }\n          team1 {\n            seed\n            eliminated\n            team {\n              name\n              id\n            }\n            id\n          }\n          team2 {\n            seed\n            eliminated\n            team {\n              name\n              id\n            }\n            id\n          }\n        }\n      }\n    }\n  }\n}\n"
+            "text": "query TourneyPageQuery(\n  $tourneyId: ID!\n) {\n  tourney(id: $tourneyId) {\n    id\n    name\n    admin {\n      id\n    }\n    game {\n      id\n      name\n    }\n    teams {\n      edges {\n        node {\n          id\n          name\n          competitorSet {\n            edges {\n              node {\n                id\n              }\n            }\n          }\n        }\n      }\n    }\n    matchSet(orderBy: \"round,seed\") {\n      edges {\n        node {\n          id\n          round\n          seed\n          completed\n          bye\n          winner {\n            team {\n              name\n              id\n            }\n            id\n          }\n          team1 {\n            seed\n            eliminated\n            team {\n              name\n              id\n            }\n            id\n          }\n          team2 {\n            seed\n            eliminated\n            team {\n              name\n              id\n            }\n            id\n          }\n        }\n      }\n    }\n  }\n}\n"
         }
     } as any;
 })();
-(node as any).hash = 'c728479b8c1300cd0b3f926adf2c15e0';
+(node as any).hash = '27bf272d5c2a81f56b663463b9ff3a62';
 export default node;

@@ -1,11 +1,13 @@
 import { Record } from "immutable";
+import {User} from "../../types/User";
 
 export const LOG_IN = "LOG_IN";
 export const LOG_OUT = "LOG_OUT";
 
 interface LogInMessageAction {
     type: typeof LOG_IN;
-    userName: string;
+    username: string;
+    id: string;
 }
 
 interface LogOutMessageAction {
@@ -14,9 +16,10 @@ interface LogOutMessageAction {
 
 export type AuthActionTypes = LogInMessageAction | LogOutMessageAction;
 
-export const logIn = (userName: string): AuthActionTypes => ({
+export const logIn = (user: User): AuthActionTypes => ({
     type: LOG_IN,
-    userName,
+    username: user.username,
+    id: user.id
 });
 
 export const logOut = (): AuthActionTypes => ({
@@ -24,14 +27,16 @@ export const logOut = (): AuthActionTypes => ({
 });
 
 interface IAuthRecord {
-    userName: string;
+    username: string;
+    id: string;
     loggedIn: boolean;
 }
 
-const defaultAuthRecords: IAuthRecord = { userName: null, loggedIn: false };
+const defaultAuthRecords: IAuthRecord = { username: null, loggedIn: false, id: null };
 
 export interface AuthParams {
-    userName?: string;
+    username?: string;
+    id?: string;
     loggedIn?: boolean;
 }
 
@@ -51,7 +56,8 @@ const authReducer = (
     switch (action.type) {
         case LOG_IN: {
             return state.merge({
-                userName: action.userName,
+                username: action.username,
+                id: action.id,
                 loggedIn: true,
             });
         }

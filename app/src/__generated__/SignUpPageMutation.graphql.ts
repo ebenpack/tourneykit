@@ -13,6 +13,7 @@ export type SignUpPageMutationResponse = {
         readonly ok: boolean | null;
         readonly user: {
             readonly username: string;
+            readonly id: string;
         } | null;
     } | null;
 };
@@ -68,70 +69,77 @@ const node: ConcreteRequest = (function () {
         } as any)
     ], v1 = [
         ({
-            "kind": "Variable",
-            "name": "email",
-            "variableName": "email"
-        } as any),
-        ({
-            "kind": "Variable",
-            "name": "password",
-            "variableName": "password"
-        } as any),
-        ({
-            "kind": "Variable",
-            "name": "passwordVerify",
-            "variableName": "passwordVerify"
-        } as any),
-        ({
-            "kind": "Variable",
-            "name": "username",
-            "variableName": "username"
-        } as any)
-    ], v2 = ({
-        "alias": null,
-        "args": null,
-        "kind": "ScalarField",
-        "name": "ok",
-        "storageKey": null
-    } as any), v3 = ({
-        "alias": null,
-        "args": null,
-        "kind": "ScalarField",
-        "name": "username",
-        "storageKey": null
-    } as any);
-    return {
-        "fragment": {
-            "argumentDefinitions": (v0 /*: any*/),
-            "kind": "Fragment",
-            "metadata": null,
-            "name": "SignUpPageMutation",
+            "alias": null,
+            "args": [
+                {
+                    "kind": "Variable",
+                    "name": "email",
+                    "variableName": "email"
+                },
+                {
+                    "kind": "Variable",
+                    "name": "password",
+                    "variableName": "password"
+                },
+                {
+                    "kind": "Variable",
+                    "name": "passwordVerify",
+                    "variableName": "passwordVerify"
+                },
+                {
+                    "kind": "Variable",
+                    "name": "username",
+                    "variableName": "username"
+                }
+            ],
+            "concreteType": "SignUp",
+            "kind": "LinkedField",
+            "name": "signUp",
+            "plural": false,
             "selections": [
                 {
                     "alias": null,
-                    "args": (v1 /*: any*/),
-                    "concreteType": "SignUp",
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "ok",
+                    "storageKey": null
+                },
+                {
+                    "alias": null,
+                    "args": null,
+                    "concreteType": "UserType",
                     "kind": "LinkedField",
-                    "name": "signUp",
+                    "name": "user",
                     "plural": false,
                     "selections": [
-                        (v2 /*: any*/),
                         {
                             "alias": null,
                             "args": null,
-                            "concreteType": "UserType",
-                            "kind": "LinkedField",
-                            "name": "user",
-                            "plural": false,
-                            "selections": [
-                                (v3 /*: any*/)
-                            ],
+                            "kind": "ScalarField",
+                            "name": "username",
+                            "storageKey": null
+                        },
+                        {
+                            "alias": null,
+                            "args": null,
+                            "kind": "ScalarField",
+                            "name": "id",
                             "storageKey": null
                         }
                     ],
                     "storageKey": null
                 }
             ],
+            "storageKey": null
+        } as any)
+    ];
+    return {
+        "fragment": {
+            "argumentDefinitions": (v0 /*: any*/),
+            "kind": "Fragment",
+            "metadata": null,
+            "name": "SignUpPageMutation",
+            "selections": (v1 /*: any*/),
             "type": "Mutations"
         },
         "kind": "Request",
@@ -139,39 +147,7 @@ const node: ConcreteRequest = (function () {
             "argumentDefinitions": (v0 /*: any*/),
             "kind": "Operation",
             "name": "SignUpPageMutation",
-            "selections": [
-                {
-                    "alias": null,
-                    "args": (v1 /*: any*/),
-                    "concreteType": "SignUp",
-                    "kind": "LinkedField",
-                    "name": "signUp",
-                    "plural": false,
-                    "selections": [
-                        (v2 /*: any*/),
-                        {
-                            "alias": null,
-                            "args": null,
-                            "concreteType": "UserType",
-                            "kind": "LinkedField",
-                            "name": "user",
-                            "plural": false,
-                            "selections": [
-                                (v3 /*: any*/),
-                                {
-                                    "alias": null,
-                                    "args": null,
-                                    "kind": "ScalarField",
-                                    "name": "id",
-                                    "storageKey": null
-                                }
-                            ],
-                            "storageKey": null
-                        }
-                    ],
-                    "storageKey": null
-                }
-            ]
+            "selections": (v1 /*: any*/)
         },
         "params": {
             "id": null,
@@ -182,5 +158,5 @@ const node: ConcreteRequest = (function () {
         }
     } as any;
 })();
-(node as any).hash = '77e42342ffb604cda2e783ad1b714a68';
+(node as any).hash = 'b37036cae46148808148d70572136d6c';
 export default node;
