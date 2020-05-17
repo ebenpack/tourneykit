@@ -17,6 +17,9 @@ const tourneyQuery = graphql`
         tourney(id: $tourneyId) {
             id
             name
+            admin {
+                id
+            }
             game {
                 id
                 name
