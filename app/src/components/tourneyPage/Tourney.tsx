@@ -1,15 +1,25 @@
 import * as React from "react";
 
 import { TourneyPageQueryResponse } from "../../__generated__/TourneyPageQuery.graphql";
-import { Matches } from "./Match";
+import { Matches } from "./Matches";
+import { User } from "../../types/User";
+import { connect } from "react-redux";
+import { getSelf } from "../auth/authSelectors";
+import { RootState } from "../app/appStore";
 
-const Tourney = ({ tourney }: TourneyPageQueryResponse) => {
+interface TourneyProps {
+    tourney: TourneyPageQueryResponse["tourney"];
+    self: User;
+}
+
+const Tourney = ({ tourney, self }: TourneyProps) => {
     const totalRounds = Math.max(
         ...tourney.matchSet.edges.map(({ node: match }) => match.round)
     );
     const maxMatchesPerRound = Math.max(
         ...tourney.matchSet.edges.map(({ node: match }) => match.seed)
     );
+    const displayAdmin = self.id === tourney.admin.id;
     const bracketWidth = 1000;
     const bracketHeight = 400;
     const roundWidth = bracketWidth / totalRounds;
@@ -39,4 +49,10 @@ const Tourney = ({ tourney }: TourneyPageQueryResponse) => {
     );
 };
 
-export default Tourney;
+const mapStateToProps = (state: RootState) => ({
+    self: getSelf(state),
+});
+
+const ConnectedTourney = connect(mapStateToProps)(Tourney);
+
+export default ConnectedTourney;
