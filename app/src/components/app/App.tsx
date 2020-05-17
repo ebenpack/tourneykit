@@ -23,7 +23,7 @@ import {
 } from "../../__generated__/AppQuery.graphql";
 
 import { ErrorType, ErrorMessage } from "../../relay/errorType";
-import {User} from "../../types/User";
+import { User } from "../../types/User";
 
 // TODO: CLEAN UP!
 

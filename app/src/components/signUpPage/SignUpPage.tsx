@@ -11,7 +11,7 @@ import Field from "../form/Field";
 
 import { SignUpPageMutationResponse } from "../../__generated__/SignUpPageMutation.graphql";
 import { RootState } from "../app/appStore";
-import {User} from "../../types/User";
+import { User } from "../../types/User";
 
 const { useState, useEffect } = React;
 

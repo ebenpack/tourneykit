@@ -1,5 +1,5 @@
 import { Record } from "immutable";
-import {User} from "../../types/User";
+import { User } from "../../types/User";
 
 export const LOG_IN = "LOG_IN";
 export const LOG_OUT = "LOG_OUT";
@@ -19,7 +19,7 @@ export type AuthActionTypes = LogInMessageAction | LogOutMessageAction;
 export const logIn = (user: User): AuthActionTypes => ({
     type: LOG_IN,
     username: user.username,
-    id: user.id
+    id: user.id,
 });
 
 export const logOut = (): AuthActionTypes => ({
@@ -32,7 +32,11 @@ interface IAuthRecord {
     loggedIn: boolean;
 }
 
-const defaultAuthRecords: IAuthRecord = { username: null, loggedIn: false, id: null };
+const defaultAuthRecords: IAuthRecord = {
+    username: null,
+    loggedIn: false,
+    id: null,
+};
 
 export interface AuthParams {
     username?: string;
